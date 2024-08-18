@@ -19,7 +19,17 @@ def index():
     return render_template('index.html' , data= data)
 
 
-@app.route('/create',methods=['POST'])
+@app.route('/create', methods=['POST'])
 def create():
-    conn =db_conn()
+    conn = db_conn()
     cur = conn.cursor()
+    name = request.form['name']
+
+    # Corrected SQL statement with parameters
+    cur.execute('''INSERT INTO course (name) VALUES (%s)''', (name,))
+
+    conn.commit()
+    cur.close()
+    conn.close()
+
+    return redirect(url_for('index'))
