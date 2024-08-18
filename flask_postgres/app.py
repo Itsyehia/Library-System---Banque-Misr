@@ -1,12 +1,13 @@
 import psycopg2
-from flask import Flask, render_template, request, redirect, url_for
-from init_db import get_books, borrow_book, return_book_to_library
+from flask import Flask, render_template, redirect, url_for
+from flask import request 
+from init_db import get_books, borrow_book, return_book_to_library, Search_books
 
 app = Flask(__name__)
 
 
 def db_conn():
-    conn = psycopg2.connect(database="BM Task", host="localhost", user="postgres", password="root", port="5432")
+    conn = psycopg2.connect(database="BM Task", host="localhost", user="postgres", password="12345", port="5432")
     return conn
 
 
@@ -97,3 +98,26 @@ def return_book():
 
     books = get_books()
     return render_template('return.html', books=books, message=message)
+
+@app.route('/searchbooks', methods=['GET', 'POST'])
+def search_books():
+    message = None
+    books = []  # Initialize the 'books' variable with an empty list
+
+    if request.method == 'POST':
+        book_name = request.form.get('book_name')
+        print(f"Searching for book_name: {book_name}")  # Debugging line
+
+        if not book_name:  # Check if book_name is empty
+            message = "Please enter a book name to search."
+        else:
+            books = Search_books(book_name) or []  # Ensure books is a list
+            print(f"Books found: {books}")  # Debugging line
+
+            # Check if no books are found
+            if not books:
+                message = "No books found."
+
+    return render_template('SearchBook.html', books=books, message=message)
+
+
