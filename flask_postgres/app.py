@@ -1,46 +1,36 @@
 import psycopg2
 from flask import Flask, render_template, redirect, url_for
-from flask import request 
+from flask import request
 from init_db import get_books, borrow_book, return_book_to_library, Search_books
-
 
 app = Flask(__name__)
 
 
+# Database connection function
 def db_conn():
-    conn = psycopg2.connect(database="BM Task", host="localhost", user="postgres", password="54321", port="5432")
+    """
+    Establishes a connection to the PostgreSQL database.
+    """
+    conn = psycopg2.connect(database="BM Task", host="localhost", user="postgres", password="root", port="5432")
     return conn
 
 
+# Route for the home page
 @app.route('/')
-def index():
-    conn = db_conn()
-    cur = conn.cursor()
-    cur.execute('''SELECT * FROM course''')
-    data = cur.fetchall()
-    cur.close()
-    conn.close()
-    return render_template('index.html', data=data)
+def home():
+    """
+    Renders the home page.
+    """
+    return render_template('home.html')
 
 
-@app.route('/create', methods=['POST'])
-def create():
-    conn = db_conn()
-    cur = conn.cursor()
-    name = request.form['name']
-
-    # Corrected SQL statement with parameters
-    cur.execute('''INSERT INTO course (name) VALUES (%s)''', (name,))
-
-    conn.commit()
-    cur.close()
-    conn.close()
-
-    return redirect(url_for('index'))
-
-
+# Route for borrowing a book
 @app.route('/borrow', methods=['GET', 'POST'])
 def borrow():
+    """
+    Handles the borrowing of a book. Validates user ID and book name,
+    and processes the borrowing request.
+    """
     message = None
     if request.method == 'POST':
         book_name = request.form.get('book_name')
@@ -66,12 +56,17 @@ def borrow():
         except ValueError:
             message = "Invalid User ID. Please enter a valid number."
 
-    books = get_books()
+    books = get_books()  # Fetch the list of books from the database
     return render_template('borrow.html', books=books, message=message)
 
 
+# Route for returning a book
 @app.route('/return', methods=['GET', 'POST'])
 def return_book():
+    """
+    Handles the return of a book. Validates user ID and book name,
+    and processes the return request.
+    """
     message = None
     if request.method == 'POST':
         book_name = request.form.get('book_name')
@@ -97,11 +92,17 @@ def return_book():
         except ValueError:
             message = "Invalid User ID. Please enter a valid number."
 
-    books = get_books()
+    books = get_books()  # Fetch the list of books from the database
     return render_template('return.html', books=books, message=message)
 
+
+# Route for searching books
 @app.route('/searchbooks', methods=['GET', 'POST'])
 def search_books():
+    """
+    Handles the search for books. Validates search query and returns
+    search results.
+    """
     message = None
     books = []  # Initialize the 'books' variable with an empty list
 
@@ -122,14 +123,17 @@ def search_books():
     return render_template('SearchBook.html', books=books, message=message)
 
 
-
-@app.route('/ShowBooks')
+# Route for showing all books
+@app.route('/showbooks')
 def show_books():
+    """
+    Retrieves and displays all books from the database.
+    """
     try:
         conn = db_conn()
         cur = conn.cursor()
         cur.execute('''SELECT * FROM book''')
-        data = cur.fetchall()
+        data = cur.fetchall()  # Fetch all book records
         cur.close()
         conn.close()
         return render_template('ShowBooks.html', data=data)
@@ -138,8 +142,12 @@ def show_books():
         return "An error occurred while fetching books.", 500
 
 
-@app.route('/AddBook', methods=['GET', 'POST'])
+# Route for adding a new book
+@app.route('/addbook', methods=['GET', 'POST'])
 def add_book():
+    """
+    Handles the addition of a new book to the database.
+    """
     if request.method == 'POST':
         name = request.form['name']
         userID = None  # userID will be None, meaning NULL in SQL
@@ -150,14 +158,18 @@ def add_book():
         conn.commit()
         cur.close()
         conn.close()
-        
+
         return redirect(url_for('show_books'))  # Redirect to show books
 
     return render_template('AddBook.html')
 
 
-@app.route('/RemoveBook/<int:book_id>', methods=['POST'])
+# Route for removing a book by its ID
+@app.route('/removebook/<int:book_id>', methods=['POST'])
 def remove_book(book_id):
+    """
+    Handles the removal of a book from the database by its ID.
+    """
     try:
         conn = db_conn()
         cur = conn.cursor()
