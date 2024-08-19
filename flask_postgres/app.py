@@ -181,3 +181,27 @@ def remove_book(book_id):
     except Exception as e:
         print(f"Error: {e}")  # Log the error for debugging
         return "An error occurred while removing the book.", 500
+
+
+# route for the admin page
+@app.route('/admin/dashboard')
+def admin_dashboard():
+    try:
+        conn = db_conn()
+        cur = conn.cursor()
+
+        # Fetch all books
+        cur.execute('SELECT * FROM book')
+        books = cur.fetchall()
+
+        # Fetch all users
+        cur.execute('SELECT * FROM users')
+        users = cur.fetchall()
+
+        cur.close()
+        conn.close()
+
+        return render_template("adminDashboard.html", books=books, users=users)
+    except Exception as e:
+        print(f"Error: {e}")  # Log the error for debugging
+        return "An error occurred while fetching data.", 500
