@@ -13,17 +13,24 @@ def db_conn():
     """
     Establishes a connection to the PostgreSQL database.
     """
-    conn = psycopg2.connect(database="BM Task", host="localhost", user="postgres", password="root", port="5432")
+    conn = psycopg2.connect(database="BM Task", host="localhost", user="postgres", password="54321", port="54321")
     return conn
 
 
-# Route for the home page
+@app.route('/landing')
+def landing():
+    session.pop('user_id', None)  # Remove the user_id from the session
+
+    return render_template('landing.html')
+
+
+
 # Route for the home page
 @app.route('/')
 def home():
     user_id = session.get('user_id')  # Retrieve user_id from the session
     if not user_id:
-        return redirect(url_for('signupUser'))  # Redirect if user_id is not in session
+        return redirect(url_for('loginUser'))  # Redirect if user_id is not in session
     return render_template('home.html', user_id=user_id)
 
 
@@ -42,6 +49,7 @@ def signupUser():
             return render_template('signup.html', message=message, message_class=message_class)
 
     return render_template('signup.html')
+
 
 
 # Route for borrowing a book
@@ -264,10 +272,10 @@ def loginUser():
         user_type, user_id = check_credentials(email, password)
 
         if user_type == 'admin':
-            session['userid'] = user_id
+            session['user_id'] = user_id  # Ensure consistent session key
             return redirect(url_for('admin_dashboard'))
         elif user_type == 'user':
-            session['userid'] = user_id
+            session['user_id'] = user_id  # Ensure consistent session key
             return redirect(url_for('home'))
         else:
             message = 'Invalid email or password'
@@ -275,3 +283,4 @@ def loginUser():
             return render_template('loginadmin.html', message=message, message_class=message_class)
 
     return render_template('loginadmin.html')
+

@@ -42,6 +42,20 @@
         .button-container a:hover {
             background-color: #0056b3;
         }
+        .logout-container form button {
+            padding: 10px 20px;
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .logout-container form button:hover {
+            background-color: #c82333;
+        }
 
         @media (max-width: 600px) {
             .button-container {
@@ -52,6 +66,9 @@
             .button-container a {
                 width: 100%;
                 text-align: center;
+            }
+            .logout-container form button {
+                width: 100%;
             }
         }
     </style>
@@ -64,6 +81,9 @@
             <a href="/searchbooks">Search Book</a>
             <a href="/borrow">Borrow Book</a>
             <a href="/return">Return Book</a>
+        </div>
+        <div class="logout-container">
+            <a href="/landing">Log Out</a>
         </div>
     </div>
 </body>
