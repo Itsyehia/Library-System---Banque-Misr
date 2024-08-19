@@ -1,9 +1,11 @@
+import bcrypt
 import psycopg2
 from flask import Flask, render_template, redirect, url_for
-from flask import request
-from init_db import get_books, borrow_book, return_book_to_library, Search_books
+from flask import request, session
+from init_db import get_books, borrow_book, return_book_to_library, Search_books, create_user
 
 app = Flask(__name__)
+app.secret_key = 'your_secret_key_here'  # Replace with a strong random string
 
 
 # Database connection function
@@ -16,45 +18,49 @@ def db_conn():
 
 
 # Route for the home page
+# Route for the home page
 @app.route('/')
 def home():
-    """
-    Renders the home page.
-    """
-    return render_template('home.html')
+    user_id = session.get('user_id')  # Retrieve user_id from the session
+    if not user_id:
+        return redirect(url_for('signupUser'))  # Redirect if user_id is not in session
+    return render_template('home.html', user_id=user_id)
+
+
+@app.route('/signupUser', methods=['GET', 'POST'])
+def signupUser():
+    if request.method == 'POST':
+        username = request.form['username']
+        email = request.form['email']
+        password = request.form['password']
+        message, message_class, user_id = create_user(username, email, password)
+        if message_class == "alert-success":
+            # Store the userID in the session
+            session['user_id'] = user_id
+            return redirect(url_for('home'))
+        else:
+            return render_template('signup.html', message=message, message_class=message_class)
+
+    return render_template('signup.html')
 
 
 # Route for borrowing a book
 @app.route('/borrow', methods=['GET', 'POST'])
 def borrow():
     """
-    Handles the borrowing of a book. Validates user ID and book name,
+    Handles the borrowing of a book. Uses the user ID from the session
     and processes the borrowing request.
     """
     message = None
+    user_id = session.get('user_id')  # Get user_id from the session
+    if not user_id:
+        return redirect(url_for('signupUser'))  # Redirect to sign up if user_id is not in session
+
     if request.method == 'POST':
         book_name = request.form.get('book_name')
-        user_id = request.form.get('user_id')
 
-        # Validate user_id
-        try:
-            user_id = int(user_id)
-            if user_id <= 0:
-                message = "Invalid User ID. Please enter a positive number."
-            else:
-                conn = db_conn()
-                cur = conn.cursor()
-                cur.execute('''SELECT userID FROM users WHERE userID = %s''', (user_id,))
-                user_exists = cur.fetchone()
-                cur.close()
-                conn.close()
-
-                if user_exists is None:
-                    message = "User ID does not exist. Please enter a valid User ID."
-                else:
-                    message = borrow_book(book_name, user_id)
-        except ValueError:
-            message = "Invalid User ID. Please enter a valid number."
+        # Borrow the book using the user_id from the session
+        message = borrow_book(book_name, user_id)
 
     books = get_books()  # Fetch the list of books from the database
     return render_template('borrow.html', books=books, message=message)
@@ -64,35 +70,44 @@ def borrow():
 @app.route('/return', methods=['GET', 'POST'])
 def return_book():
     """
-    Handles the return of a book. Validates user ID and book name,
+    Handles the return of a book. Uses the user ID from the session
     and processes the return request.
     """
     message = None
+    user_id = session.get('user_id')  # Get user_id from the session
+    if not user_id:
+        return redirect(url_for('signupUser'))  # Redirect to sign up if user_id is not in session
+
+    conn = db_conn()
+    cur = conn.cursor()
+
+    # Fetch the list of books borrowed by the user
+    cur.execute('''SELECT Title FROM book WHERE BorrowedBy = %s''', (user_id,))
+    borrowed_books = cur.fetchall()
+    cur.close()
+    conn.close()
+
+    books = [book[0] for book in borrowed_books]  # Extract book titles from the query result
+
     if request.method == 'POST':
         book_name = request.form.get('book_name')
-        user_id = request.form.get('user_id')
 
-        # Validate user_id
-        try:
-            user_id = int(user_id)
-            if user_id <= 0:
-                message = "Invalid User ID. Please enter a positive number."
-            else:
-                conn = db_conn()
-                cur = conn.cursor()
-                cur.execute('''SELECT userID FROM users WHERE userID = %s''', (user_id,))
-                user_exists = cur.fetchone()
-                cur.close()
-                conn.close()
+        # Return the book using the user_id from the session
+        message = return_book_to_library(book_name, user_id)
 
-                if user_exists is None:
-                    message = "User ID does not exist. Please enter a valid User ID."
-                else:
-                    message = return_book_to_library(book_name, user_id)
-        except ValueError:
-            message = "Invalid User ID. Please enter a valid number."
+        # Refresh the list of borrowed books after returning one
+        conn = db_conn()
+        cur = conn.cursor()
+        cur.execute('''SELECT Title FROM book WHERE BorrowedBy = %s''', (user_id,))
+        borrowed_books = cur.fetchall()
+        cur.close()
+        conn.close()
 
-    books = get_books()  # Fetch the list of books from the database
+        books = [book[0] for book in borrowed_books]
+
+    if not books:
+        message = "You have no books to return."
+
     return render_template('return.html', books=books, message=message)
 
 
@@ -205,3 +220,58 @@ def admin_dashboard():
     except Exception as e:
         print(f"Error: {e}")  # Log the error for debugging
         return "An error occurred while fetching data.", 500
+
+
+def check_credentials(email, password):
+    conn = db_conn()
+    cursor = conn.cursor()
+
+    conn = db_conn()
+    cursor = conn.cursor()
+
+    try:
+        # Check if the user is an admin
+        cursor.execute('SELECT AdminID, PasswordHash FROM Admins WHERE Email = %s', (email,))
+        admin = cursor.fetchone()
+        if admin:
+            admin_id, admin_hash = admin
+            if password == admin_hash:  # Compare raw password
+                return 'admin', admin_id
+
+        # Check if the user is a regular user
+        cursor.execute('SELECT UserID, PasswordHash FROM users WHERE Email = %s', (email,))
+        user = cursor.fetchone()
+        if user:
+            user_id, user_hash = user
+            if password == user_hash:  # Compare raw password
+                return 'user', user_id
+
+    except Exception as e:
+        print(f"Error checking credentials: {e}")
+    finally:
+        cursor.close()
+        conn.close()
+
+    return 'none', None
+
+
+@app.route('/loginUser', methods=['GET', 'POST'])
+def loginUser():
+    if request.method == 'POST':
+        email = request.form['email']
+        password = request.form['password']
+
+        user_type, user_id = check_credentials(email, password)
+
+        if user_type == 'admin':
+            session['userid'] = user_id
+            return redirect(url_for('admin_dashboard'))
+        elif user_type == 'user':
+            session['userid'] = user_id
+            return redirect(url_for('home'))
+        else:
+            message = 'Invalid email or password'
+            message_class = 'alert-danger'
+            return render_template('loginadmin.html', message=message, message_class=message_class)
+
+    return render_template('loginadmin.html')

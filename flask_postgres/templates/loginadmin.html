@@ -2,9 +2,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Borrow a Book</title>
-    <!-- Include Bootstrap CSS -->
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <title>User Login</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -34,7 +32,7 @@
             display: block;
             margin-bottom: 5px;
         }
-        .form-group select {
+        .form-group input {
             width: 100%;
             padding: 8px;
             box-sizing: border-box;
@@ -50,34 +48,34 @@
             color: #fff;
             font-size: 16px;
             cursor: pointer;
-            margin-top: 10px;
         }
         .btn:hover {
             background-color: #0056b3;
         }
+        .message {
+            margin-top: 20px;
+            font-size: 14px;
+            color: red;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h2>Borrow a Book</h2>
-        <form action="/borrow" method="POST">
+     <div class="container">
+        <h2>Login</h2>
+        <form action="/loginUser" method="POST">
             <div class="form-group">
-                <label for="book_name">Select a Book:</label>
-                <select id="book_name" name="book_name" required>
-                    {% for book in books %}
-                        <option value="{{ book }}">{{ book }}</option>
-                    {% endfor %}
-                </select>
+                <label for="email">Email:</label>
+                <input type="text" id="email" name="email" required>
             </div>
-            <button type="submit" class="btn">Borrow Book</button>
-        </form>
-        <form action="/" method="GET">
-            <button type="submit" class="btn" >Home Page</button>
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <button type="submit" class="btn">Login</button>
         </form>
         {% if message %}
-            <div class="alert {% if 'successfully' in message %}alert-success{% else %}alert-danger{% endif %} mt-4">
-                {{ message }}
-            </div>
+            <div class="message">{{ message }}</div>
         {% endif %}
     </div>
 </body>

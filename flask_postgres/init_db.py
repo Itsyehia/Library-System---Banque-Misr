@@ -1,4 +1,6 @@
 import psycopg2
+from psycopg2 import sql
+import bcrypt
 
 try:
     # Connect to the PostgreSQL database with specified parameters
@@ -56,9 +58,9 @@ def get_books():
             conn.close()
 
 
-def borrow_book(book_name, user_id):
+def borrow_book(book_title, user_id):
     """
-    Allows a user to borrow a book by updating its userID in the database.
+    Allows a user to borrow a book by updating its BorrowedBy field in the database.
     Returns a message indicating the result of the operation.
     """
     try:
@@ -69,20 +71,20 @@ def borrow_book(book_name, user_id):
         cur = conn.cursor()
 
         # Check if the book exists and if it is currently borrowed
-        cur.execute('''SELECT userID FROM book WHERE name = %s''', (book_name,))
+        cur.execute('''SELECT BorrowedBy FROM book WHERE Title = %s''', (book_title,))
         result = cur.fetchone()
 
         if result is None:
             # Book does not exist
-            message = f"The book '{book_name}' does not exist."
+            message = f"The book '{book_title}' does not exist."
         elif result[0] is None:
-            # Book exists and is not currently borrowed; update the userID
-            cur.execute('''UPDATE book SET userID = %s WHERE name = %s''', (user_id, book_name))
+            # Book exists and is not currently borrowed; update the BorrowedBy field
+            cur.execute('''UPDATE book SET BorrowedBy = %s WHERE Title = %s''', (user_id, book_title))
             conn.commit()
-            message = f"Book '{book_name}' has been borrowed successfully by user with ID {user_id}."
+            message = f"Book '{book_title}' has been borrowed successfully by user with ID {user_id}."
         else:
             # Book is already borrowed
-            message = f"The book '{book_name}' is already borrowed. Please choose another one."
+            message = f"The book '{book_title}' is already borrowed. Please choose another one."
 
         # Close the cursor
         cur.close()
@@ -98,7 +100,7 @@ def borrow_book(book_name, user_id):
 
 def return_book_to_library(book_name, user_id):
     """
-    Allows a user to return a borrowed book by updating its userID to NULL in the database.
+    Allows a user to return a borrowed book by updating its BorrowedBy field to NULL in the database.
     Returns a message indicating the result of the operation.
     """
     try:
@@ -109,15 +111,15 @@ def return_book_to_library(book_name, user_id):
         cur = conn.cursor()
 
         # Check if the book exists and if it was borrowed by the user
-        cur.execute('''SELECT userID FROM book WHERE name = %s''', (book_name,))
+        cur.execute('''SELECT BorrowedBy FROM book WHERE Title = %s''', (book_name,))
         result = cur.fetchone()
 
         if result is None:
             # Book does not exist
             message = f"The book '{book_name}' does not exist."
         elif result[0] == user_id:
-            # Book exists and was borrowed by the user; update the userID to NULL
-            cur.execute('''UPDATE book SET userID = NULL WHERE name = %s''', (book_name,))
+            # Book exists and was borrowed by the user; update the BorrowedBy to NULL
+            cur.execute('''UPDATE book SET BorrowedBy = NULL WHERE Title = %s''', (book_name,))
             conn.commit()
             message = f"Book '{book_name}' has been returned successfully by user with ID {user_id}."
         else:
@@ -165,5 +167,44 @@ def Search_books(name):
         return []
     finally:
         # Ensure the database connection is closed
+        if conn:
+            conn.close()
+
+
+def create_user(username, email, password):
+    try:
+        conn = psycopg2.connect(database="BM Task", host="localhost", user="postgres", password="root", port="5432")
+        cur = conn.cursor()
+
+        # Hash the password using bcrypt
+        hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+
+        # Insert the new user into the users table and return the userID
+        cur.execute(
+            sql.SQL("INSERT INTO users (username, Email, PasswordHash) VALUES (%s, %s, %s) RETURNING UserID"),
+            [username, email, hashed_password]
+        )
+
+        # Fetch the userID of the newly created user
+        user_id = cur.fetchone()[0]
+
+        conn.commit()
+        return "User created successfully!", "alert-success", user_id
+
+    except psycopg2.IntegrityError as e:
+        conn.rollback()
+        if 'users_username_key' in str(e):
+            return "Username already exists. Please choose another one.", "alert-danger", None
+        elif 'users_email_key' in str(e):
+            return "Email already exists. Please choose another one.", "alert-danger", None
+        else:
+            return f"An error occurred: {e}", "alert-danger", None
+
+    except psycopg2.Error as e:
+        return f"An error occurred: {e}", "alert-danger", None
+
+    finally:
+        if cur:
+            cur.close()
         if conn:
             conn.close()
