@@ -4,7 +4,7 @@ import bcrypt
 
 try:
     # Connect to the PostgreSQL database with specified parameters
-    conn = psycopg2.connect(database="BM Task", host="localhost", user="postgres", password="12345", port="5432")
+    conn = psycopg2.connect(database="BM Task", host="localhost", user="postgres", password="root", port="5432")
 
     # Create a cursor object to interact with the database
     cur = conn.cursor()
@@ -32,7 +32,7 @@ def get_books():
     """
     try:
         # Reconnect to the database
-        conn = psycopg2.connect(database="BM Task", host="localhost", user="postgres", password="12345", port="5432")
+        conn = psycopg2.connect(database="BM Task", host="localhost", user="postgres", password="root", port="5432")
 
         # Create a cursor object
         cur = conn.cursor()
@@ -65,7 +65,7 @@ def borrow_book(book_title, user_id):
     """
     try:
         # Reconnect to the database
-        conn = psycopg2.connect(database="BM Task", host="localhost", user="postgres", password="12345", port="5432")
+        conn = psycopg2.connect(database="BM Task", host="localhost", user="postgres", password="root", port="5432")
 
         # Create a cursor object
         cur = conn.cursor()
@@ -105,7 +105,7 @@ def return_book_to_library(book_name, user_id):
     """
     try:
         # Reconnect to the database
-        conn = psycopg2.connect(database="BM Task", host="localhost", user="postgres", password="12345", port="5432")
+        conn = psycopg2.connect(database="BM Task", host="localhost", user="postgres", password="root", port="5432")
 
         # Create a cursor object
         cur = conn.cursor()
@@ -145,7 +145,7 @@ def Search_books(name):
     """
     try:
         # Reconnect to the database
-        conn = psycopg2.connect(database="BM Task", host="localhost", user="postgres", password="12345", port="5432")
+        conn = psycopg2.connect(database="BM Task", host="localhost", user="postgres", password="root", port="5432")
 
         # Create a cursor object
         cur = conn.cursor()
@@ -173,7 +173,7 @@ def Search_books(name):
 
 def create_user(username, email, password):
     try:
-        conn = psycopg2.connect(database="BM Task", host="localhost", user="postgres", password="12345", port="5432")
+        conn = psycopg2.connect(database="BM Task", host="localhost", user="postgres", password="root", port="5432")
         cur = conn.cursor()
 
         # Hash the password using bcrypt
