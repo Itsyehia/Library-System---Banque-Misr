@@ -50,6 +50,7 @@
             color: #fff;
             font-size: 16px;
             cursor: pointer;
+            margin-top:10px;
         }
         .btn:hover {
             background-color: #0056b3;
@@ -86,6 +87,13 @@
             
 
         </form>
+
+
+         <form action="/" method="GET">
+            <button type="submit" class="btn">Home Page</button>
+        </form>
+
+
         {% if message %}
             <div class="message">{{ message }}</div>
         {% endif %}
