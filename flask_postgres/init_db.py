@@ -71,7 +71,7 @@ def borrow_book(book_title, user_id):
         cur = conn.cursor()
 
         # Check if the book exists and if it is currently borrowed
-        cur.execute('''SELECT BorrowedBy FROM book WHERE Title = %s''', (book_title,))
+        cur.execute('''SELECT BorrowedBy FROM book WHERE name = %s''', (book_title,))
         result = cur.fetchone()
 
         if result is None:
@@ -79,7 +79,7 @@ def borrow_book(book_title, user_id):
             message = f"The book '{book_title}' does not exist."
         elif result[0] is None:
             # Book exists and is not currently borrowed; update the BorrowedBy field
-            cur.execute('''UPDATE book SET BorrowedBy = %s WHERE Title = %s''', (user_id, book_title))
+            cur.execute('''UPDATE book SET BorrowedBy = %s WHERE name = %s''', (user_id, book_title))
             conn.commit()
             message = f"Book '{book_title}' has been borrowed successfully by user with ID {user_id}."
         else:
@@ -111,7 +111,7 @@ def return_book_to_library(book_name, user_id):
         cur = conn.cursor()
 
         # Check if the book exists and if it was borrowed by the user
-        cur.execute('''SELECT BorrowedBy FROM book WHERE Title = %s''', (book_name,))
+        cur.execute('''SELECT borrowedby FROM book WHERE name = %s''', (book_name,))
         result = cur.fetchone()
 
         if result is None:
@@ -119,7 +119,7 @@ def return_book_to_library(book_name, user_id):
             message = f"The book '{book_name}' does not exist."
         elif result[0] == user_id:
             # Book exists and was borrowed by the user; update the BorrowedBy to NULL
-            cur.execute('''UPDATE book SET BorrowedBy = NULL WHERE Title = %s''', (book_name,))
+            cur.execute('''UPDATE book SET borrowedby = NULL WHERE name = %s''', (book_name,))
             conn.commit()
             message = f"Book '{book_name}' has been returned successfully by user with ID {user_id}."
         else:

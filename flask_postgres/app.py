@@ -82,7 +82,7 @@ def return_book():
     cur = conn.cursor()
 
     # Fetch the list of books borrowed by the user
-    cur.execute('''SELECT Title FROM book WHERE BorrowedBy = %s''', (user_id,))
+    cur.execute('''SELECT name FROM book WHERE borrowedby = %s''', (user_id,))
     borrowed_books = cur.fetchall()
     cur.close()
     conn.close()
@@ -98,7 +98,7 @@ def return_book():
         # Refresh the list of borrowed books after returning one
         conn = db_conn()
         cur = conn.cursor()
-        cur.execute('''SELECT Title FROM book WHERE BorrowedBy = %s''', (user_id,))
+        cur.execute('''SELECT name FROM book WHERE borrowedby = %s''', (user_id,))
         borrowed_books = cur.fetchall()
         cur.close()
         conn.close()
