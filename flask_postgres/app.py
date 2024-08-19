@@ -3,11 +3,12 @@ from flask import Flask, render_template, redirect, url_for
 from flask import request 
 from init_db import get_books, borrow_book, return_book_to_library, Search_books
 
+
 app = Flask(__name__)
 
 
 def db_conn():
-    conn = psycopg2.connect(database="BM Task", host="localhost", user="postgres", password="12345", port="5432")
+    conn = psycopg2.connect(database="BM Task", host="localhost", user="postgres", password="54321", port="5432")
     return conn
 
 
@@ -121,3 +122,50 @@ def search_books():
     return render_template('SearchBook.html', books=books, message=message)
 
 
+
+@app.route('/ShowBooks')
+def show_books():
+    try:
+        conn = db_conn()
+        cur = conn.cursor()
+        cur.execute('''SELECT * FROM book''')
+        data = cur.fetchall()
+        cur.close()
+        conn.close()
+        return render_template('ShowBooks.html', data=data)
+    except Exception as e:
+        print(f"Error: {e}")  # Log the error for debugging
+        return "An error occurred while fetching books.", 500
+
+
+@app.route('/AddBook', methods=['GET', 'POST'])
+def add_book():
+    if request.method == 'POST':
+        name = request.form['name']
+        userID = None  # userID will be None, meaning NULL in SQL
+
+        conn = db_conn()
+        cur = conn.cursor()
+        cur.execute('INSERT INTO book (name, userID) VALUES (%s, %s)', (name, userID))
+        conn.commit()
+        cur.close()
+        conn.close()
+        
+        return redirect(url_for('show_books'))  # Redirect to show books
+
+    return render_template('AddBook.html')
+
+
+@app.route('/RemoveBook/<int:book_id>', methods=['POST'])
+def remove_book(book_id):
+    try:
+        conn = db_conn()
+        cur = conn.cursor()
+        cur.execute('DELETE FROM book WHERE bookID = %s', (book_id,))
+        conn.commit()
+        cur.close()
+        conn.close()
+        return redirect(url_for('show_books'))  # Redirect to show books
+    except Exception as e:
+        print(f"Error: {e}")  # Log the error for debugging
+        return "An error occurred while removing the book.", 500
