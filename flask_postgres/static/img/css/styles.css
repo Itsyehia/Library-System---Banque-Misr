@@ -161,8 +161,14 @@ img {
 
 
 /*=============== HOME ===============*/
+.home__swiper{
+  margin: initial;
+}
 
-
+.home__container{
+  padding-top: 2rem;
+  row-gap: 2.5rem;
+}
 /* Swiper class */
 
 
