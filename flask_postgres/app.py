@@ -13,7 +13,7 @@ def db_conn():
     """
     Establishes a connection to the PostgreSQL database.
     """
-    conn = psycopg2.connect(database="BM Task", host="localhost", user="postgres", password="root", port="5432")
+    conn = psycopg2.connect(database="BM Task", host="localhost", user="postgres", password="12345", port="5432")
     return conn
 
 
