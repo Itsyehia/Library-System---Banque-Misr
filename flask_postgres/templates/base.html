@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/css/styles.css">
+    <link rel="shortcut icon" href="/static/img/favicon.png" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/3.5.0/remixicon.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&display=swap"
+          rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+          integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
+          crossorigin="anonymous" referrerpolicy="no-referrer"/>
+    <link rel="stylesheet" href="https://unpkg.com/boxicons@latest/css/boxicons.min.css">
+    <link rel="stylesheet" href="/static/css/header.css">
+    <title>{% block title %}E-Book{% endblock %}</title>
+</head>
+<body>
+<!--==================== HEADER ====================-->
+<section class="header">
+    <header class="sticky">
+        <a href="#" class="logo" style="text-decoration: none;"><h3>E-Book</h3></a>
+        <ul class="navmenu">
+            <li><a href="/landing">home</a></li>
+            <li><a href="#">shop</a></li>
+            <li><a href="#">Book</a></li>
+        </ul>
+        <div class="nav-icon">
+            <a href="/searchbooks"><i class='bx bx-search-alt-2'></i></a>
+            <a href="/loginUser"><i class='bx bx-user'></i> </a>
+<!--            <a href="/borrow"><i class='bx bx-book'></i></a>-->
+            <div id="menu-icon">
+                <a href="#" class="menu" id="burger-menu"><i class='bx bx-menu'></i></a>
+            </div>
+        </div>
+    </header>
+</section>
+
+<!--==================== MAIN CONTENT ====================-->
+<main>
+    {% block content %}
+    {% endblock %}
+</main>
+
+<!--==================== FOOTER ====================-->
+<section class="contact">
+    <div class="contact-info">
+        <div class="secon-info">
+            <h4>support</h4>
+            <p>contact us</p>
+        </div>
+        <div class="third-info">
+            <h4>shop</h4>
+            <p>Shop newest</p>
+            <p>Best Sellers</p>
+            <p>Sale</p>
+        </div>
+        <div class="fourth-info">
+            <h4>company</h4>
+            <p>about us</p>
+        </div>
+        <div class="five">
+            <h4>subscribe</h4>
+            <p>subscribe to our newsletter</p>
+            <p>get 10% off your first order</p>
+        </div>
+    </div>
+</section>
+<div class="end-text">
+    <p>copyright @2024. all rights reserved. Created by Team 3 </p>
+</div>
+
+<!--=============== SCRIPTS ===============-->
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+<script src="/static/js/main.js"></script>
+
+<!--=============== Script for burger menu =============== -->
+<script>
+    const header = document.querySelector("header");
+
+    // make footer sticky
+    window.addEventListener("scroll", function(){
+        header.classList.toggle("sticky" , this.window.scrollY > 0 );
+    });
+    let menu = document.querySelector('#menu-icon');
+    let navmenu = document.querySelector('.navmenu');
+    menu.onclick = () =>{
+        menu.classList.toggle('bx-x');
+        navmenu.classList.toggle('open');
+    }
+
+</script>
+</body>
+</html>

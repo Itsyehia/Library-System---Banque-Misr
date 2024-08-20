@@ -6,41 +6,59 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
             margin: 0;
             padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background-color: #f4f4f4;
+        }
+
+        main {
+            flex: 1;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
         }
+
         .container {
             background-color: #fff;
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             width: 300px;
+            text-align: center;
+            margin-bottom: 180px; /* Add space between the container and the footer */
         }
+
         h2 {
             text-align: center;
             margin-bottom: 20px;
         }
+
         .form-group {
             margin-bottom: 15px;
+            width: 150px;
+            margin: 0 auto; /* Center the form group */
         }
+
         .form-group label {
             display: block;
             margin-bottom: 5px;
+            text-align: left;
         }
+
         .form-group input {
-            width: 100%;
+            width: 150%;
             padding: 8px;
             box-sizing: border-box;
             border: 1px solid #ccc;
             border-radius: 4px;
+            text-transform: none; 
         }
+
         .btn {
-            width: 100%;
+            width: 150px;
             padding: 10px;
             background-color: #007bff;
             border: none;
@@ -48,35 +66,62 @@
             color: #fff;
             font-size: 16px;
             cursor: pointer;
+            margin-top: 20px;
         }
+
         .btn:hover {
             background-color: #0056b3;
         }
+
         .message {
             margin-top: 20px;
             font-size: 14px;
             color: red;
             text-align: center;
         }
+
+        footer {
+            background-color: #000; /* Or any other color you prefer */
+            color: #fff;
+            padding: 10px 0;
+            text-align: center;
+            width: 100%;
+            position: relative;
+        }
     </style>
 </head>
 <body>
-     <div class="container">
-        <h2>Login</h2>
-        <form action="/loginUser" method="POST">
-            <div class="form-group">
-                <label for="email">Email:</label>
-                <input type="text" id="email" name="email" required>
+    {% extends "base.html" %}
+
+    {% block title %}
+    User Login
+    {% endblock %}
+    
+    {% block content %}
+    <main>
+        <div class="container">
+            <h2>Login</h2>
+            <form action="/loginUser" method="POST">
+                <div class="form-group">
+                    <label for="email">Email:</label>
+                    <input type="text" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password:</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Login</button>
+            </form>
+            <div style="text-align: center;">
+
+            <button type="submit" class="btn btn-primary" onclick="window.location.href='/signupUser';" >SignUp</button>
             </div>
-            <div class="form-group">
-                <label for="password">Password:</label>
-                <input type="password" id="password" name="password" required>
-            </div>
-            <button type="submit" class="btn">Login</button>
-        </form>
-        {% if message %}
-            <div class="message">{{ message }}</div>
-        {% endif %}
-    </div>
+            {% if message %}
+                <div class="message">{{ message }}</div>
+            {% endif %}
+        </div>
+    </main>
+    {% endblock %}
+
 </body>
 </html>

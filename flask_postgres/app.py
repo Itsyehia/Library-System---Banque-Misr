@@ -2,10 +2,15 @@ import bcrypt
 import psycopg2
 from flask import Flask, render_template, redirect, url_for
 from flask import request, session
-from init_db import get_books, borrow_book, return_book_to_library, Search_books, create_user
+from init_db import get_books, borrow_book, return_book_to_library, Search_books, create_user, check_user, \
+    create_adminuser
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key_here'  # Replace with a strong random string
+
+db_pass = "54321"
+
+conn = psycopg2.connect(database="BM Task", host="localhost", user="postgres", password=db_pass, port="5432")
 
 
 # Database connection function
@@ -13,7 +18,7 @@ def db_conn():
     """
     Establishes a connection to the PostgreSQL database.
     """
-    conn = psycopg2.connect(database="BM Task", host="localhost", user="postgres", password="54321", port="5432")
+    conn = psycopg2.connect(database="BM Task", host="localhost", user="postgres", password=db_pass, port="5432")
     return conn
 
 
@@ -24,13 +29,12 @@ def landing():
     return render_template('landing.html')
 
 
-
 # Route for the home page
 @app.route('/')
 def home():
     user_id = session.get('user_id')  # Retrieve user_id from the session
     if not user_id:
-        return redirect(url_for('loginUser'))  # Redirect if user_id is not in session
+        return redirect(url_for('landing'))  # Redirect if user_id is not in session
     return render_template('home.html', user_id=user_id)
 
 
@@ -40,7 +44,8 @@ def signupUser():
         username = request.form['username']
         email = request.form['email']
         password = request.form['password']
-        message, message_class, user_id = create_user(username, email, password)
+        isAdmin = 0
+        message, message_class, user_id = create_user(username, email, password, isAdmin)
         if message_class == "alert-success":
             # Store the userID in the session
             session['user_id'] = user_id
@@ -50,6 +55,23 @@ def signupUser():
 
     return render_template('signup.html')
 
+
+@app.route('/admin/signup', methods=['GET', 'POST'])
+def adminsignup():
+    if request.method == 'POST':
+        username = request.form['username']
+        email = request.form['email']
+        password = request.form['password']
+        message, message_class, user_id, user_type = create_adminuser(username, email, password)
+        if message_class == "alert-success":
+            # Store the userID in the session
+            session['user_id'] = user_id
+            session['user_type'] = user_type
+            return redirect(url_for('adminDashboard'))
+        else:
+            return render_template('signup.html', message=message, message_class=message_class)
+
+    return render_template('signup.html')
 
 
 # Route for borrowing a book
@@ -210,6 +232,9 @@ def remove_book(book_id):
 @app.route('/admin/dashboard')
 def admin_dashboard():
     try:
+        if session.get('user_type') != 'admin':
+            return redirect(url_for('home'))
+
         conn = db_conn()
         cur = conn.cursor()
 
@@ -230,57 +255,29 @@ def admin_dashboard():
         return "An error occurred while fetching data.", 500
 
 
-def check_credentials(email, password):
-    conn = db_conn()
-    cursor = conn.cursor()
-
-    conn = db_conn()
-    cursor = conn.cursor()
-
-    try:
-        # Check if the user is an admin
-        cursor.execute('SELECT AdminID, PasswordHash FROM Admins WHERE Email = %s', (email,))
-        admin = cursor.fetchone()
-        if admin:
-            admin_id, admin_hash = admin
-            if password == admin_hash:  # Compare raw password
-                return 'admin', admin_id
-
-        # Check if the user is a regular user
-        cursor.execute('SELECT UserID, PasswordHash FROM users WHERE Email = %s', (email,))
-        user = cursor.fetchone()
-        if user:
-            user_id, user_hash = user
-            if password == user_hash:  # Compare raw password
-                return 'user', user_id
-
-    except Exception as e:
-        print(f"Error checking credentials: {e}")
-    finally:
-        cursor.close()
-        conn.close()
-
-    return 'none', None
-
-
 @app.route('/loginUser', methods=['GET', 'POST'])
 def loginUser():
     if request.method == 'POST':
         email = request.form['email']
         password = request.form['password']
 
-        user_type, user_id = check_credentials(email, password)
+        user_type, user_id, isAdmin = check_user(email, password)
 
-        if user_type == 'admin':
-            session['user_id'] = user_id  # Ensure consistent session key
+        print(isAdmin)
+        if isAdmin == 1:
+            session['user_id'] = user_id
+            session['user_type'] = user_type  # Ensure consistent session key
+            print(isAdmin,password)
             return redirect(url_for('admin_dashboard'))
-        elif user_type == 'user':
+        elif isAdmin == 0:
             session['user_id'] = user_id  # Ensure consistent session key
+            session['user_type'] = user_type  # Ensure consistent session key
+            print(isAdmin,password)
             return redirect(url_for('home'))
         else:
             message = 'Invalid email or password'
             message_class = 'alert-danger'
+            print(isAdmin,password)
             return render_template('loginadmin.html', message=message, message_class=message_class)
 
     return render_template('loginadmin.html')
-

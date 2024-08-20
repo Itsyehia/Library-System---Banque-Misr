@@ -8,14 +8,22 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
             margin: 0;
             padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background-color: #f4f4f4;
+        }
+
+        main {
+            flex: 1;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            padding: 20px;
         }
+
         .container {
             background-color: #fff;
             padding: 30px;
@@ -23,31 +31,39 @@
             box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
             width: 400px;
         }
+
         h1 {
             text-align: center;
             margin-bottom: 30px;
             font-size: 24px;
             color: #333;
         }
+
         .form-group {
             margin-bottom: 20px;
+            width: 80%;
+            margin-left: 350px;
         }
+
         .form-group label {
             display: block;
             margin-bottom: 8px;
             font-size: 14px;
             color: #333;
         }
+
         .form-group input {
-            width: 100%;
+            width: 50%; /* Full width within the form group */
             padding: 12px;
             box-sizing: border-box;
             border: 1px solid #ccc;
             border-radius: 4px;
             font-size: 14px;
+            text-transform: none; 
         }
+
         .btn {
-            width: 100%;
+            width: 80%;
             padding: 12px;
             background-color: #007bff;
             border: none;
@@ -55,41 +71,64 @@
             color: #fff;
             font-size: 16px;
             cursor: pointer;
-            margin-top: 20px;
+            margin: 20px auto 0; /* Center the button */
+            display: block;
             transition: background-color 0.3s ease;
         }
+
         .btn:hover {
             background-color: #0056b3;
         }
+
         .alert {
             margin-top: 20px;
             font-size: 14px;
         }
+
+        footer {
+            background-color: #000;
+            color: #fff;
+            padding: 10px 0;
+            text-align: center;
+            width: 100%;
+            position: relative;
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Sign Up</h1>
-        {% if message %}
-            <div class="alert {{ message_class }}">
-                {{ message }}
-            </div>
-        {% endif %}
-        <form action="/signupUser" method="POST">
-            <div class="form-group">
-                <label for="username">Username:</label>
-                <input type="text" id="username" name="username" required>
-            </div>
-            <div class="form-group">
-                <label for="email">Email:</label>
-                <input type="email" id="email" name="email" required>
-            </div>
-            <div class="form-group">
-                <label for="password">Password:</label>
-                <input type="password" id="password" name="password" required>
-            </div>
-            <button type="submit" class="btn">Sign Up</button>
-        </form>
-    </div>
+    {% extends "base.html" %}
+
+    {% block title %}
+    Sign Up
+    {% endblock %}
+    
+    {% block content %}
+    <main>
+        <div class="container">
+            <h1>Sign Up</h1>
+            {% if message %}
+                <div class="alert {{ message_class }}">
+                    {{ message }}
+                </div>
+            {% endif %}
+            <form action="/signupUser" method="POST">
+                <div class="form-group">
+                    <label for="username">Username:</label>
+                    <input type="text" id="username" name="username" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password:</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                <button type="submit" class="btn btn-primary" style="margin-left: 350px; width: 20%;">Sign Up</button>
+            </form>
+        </div>
+    </main>
+    {% endblock %}
+
 </body>
 </html>
