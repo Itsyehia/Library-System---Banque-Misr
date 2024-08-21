@@ -1,0 +1,19 @@
+version: '3'
+services:
+  postgres1:
+    image: postgres
+    environment:
+      POSTGRES_DB: mydb
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+
+  myapp:
+    build: .
+    depends_on:
+      - postgres1
+    ports:
+      - "5000:5000"
+    environment:
+      DATABASE_URL: postgres://user:password@postgres1:5432/mydb

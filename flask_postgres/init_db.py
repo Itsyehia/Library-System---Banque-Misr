@@ -9,7 +9,7 @@ def db_conn():
     """
     Establishes a connection to the PostgreSQL database.
     """
-    conn = psycopg2.connect(database="BM Task", host="localhost", user="postgres", password=db_pass, port="5432")
+    conn = psycopg2.connect(database="BM Task", host="db", user="postgres", password=db_pass, port="5432")
     return conn
 
 
@@ -17,7 +17,7 @@ db_pass = "54321"
 
 try:
     # Connect to the PostgreSQL database with specified parameters
-    conn = psycopg2.connect(database="BM Task", host="localhost", user="postgres", password=db_pass, port="5432")
+    conn = psycopg2.connect(database="BM Task", host="db", user="postgres", password=db_pass, port="5432")
 
     # Create a cursor object to interact with the database
     cur = conn.cursor()
@@ -47,7 +47,7 @@ def get_books():
     try:
 
        # Reconnect to the database
-        conn = psycopg2.connect(database="BM Task", host="localhost", user="postgres", password=db_pass, port="5432")
+        conn = psycopg2.connect(database="BM Task", host="db", user="postgres", password=db_pass, port="5432")
 
         # Create a cursor object
         cur = conn.cursor()
@@ -80,7 +80,7 @@ def borrow_book(book_title, user_id):
     """
     try:
         # Reconnect to the database
-        conn = psycopg2.connect(database="BM Task", host="localhost", user="postgres", password=db_pass, port="5432")
+        conn = psycopg2.connect(database="BM Task", host="db", user="postgres", password=db_pass, port="5432")
 
 
         # Create a cursor object
@@ -121,7 +121,7 @@ def return_book_to_library(book_name, user_id):
     """
     try:
         # Reconnect to the database
-        conn = psycopg2.connect(database="BM Task", host="localhost", user="postgres", password=db_pass, port="5432")
+        conn = psycopg2.connect(database="BM Task", host="db", user="postgres", password=db_pass, port="5432")
 
         # Create a cursor object
         cur = conn.cursor()
@@ -161,7 +161,7 @@ def Search_books(name):
     """
     try:
         # Reconnect to the database
-        conn = psycopg2.connect(database="BM Task", host="localhost", user="postgres", password=db_pass, port="5432")
+        conn = psycopg2.connect(database="BM Task", host="db", user="postgres", password=db_pass, port="5432")
 
         # Create a cursor object
         cur = conn.cursor()
@@ -190,7 +190,7 @@ def Search_books(name):
 def create_user(username, email, password, isAdmin):
     try:
         # Reconnect to the database
-        conn = psycopg2.connect(database="BM Task", host="localhost", user="postgres", password=db_pass, port="5432")
+        conn = psycopg2.connect(database="BM Task", host="db", user="postgres", password=db_pass, port="5432")
 
         cur = conn.cursor()
 
