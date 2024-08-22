@@ -1,19 +1,35 @@
-version: '3'
+version: '3.8'
+
 services:
-  postgres1:
-    image: postgres
+  db:
+    image: postgres:latest
+    container_name: bm_task_db
     environment:
-      POSTGRES_DB: mydb
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: password
+      POSTGRES_DB: "BM Task"
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "root"
     ports:
       - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - bm_task_net
 
-  myapp:
+  web:
     build: .
-    depends_on:
-      - postgres1
+    container_name: flask_app
+    environment:
+      FLASK_ENV: development
+      DATABASE_URL: "postgresql://postgres:root@db:5432/BM Task"
     ports:
       - "5000:5000"
-    environment:
-      DATABASE_URL: postgres://user:password@postgres1:5432/mydb
+    depends_on:
+      - db
+    networks:
+      - bm_task_net
+
+volumes:
+  postgres_data:
+
+networks:
+  bm_task_net:

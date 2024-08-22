@@ -2,15 +2,14 @@ import bcrypt
 import psycopg2
 from flask import Flask, render_template, redirect, url_for
 from flask import request, session
-from init_db import get_books, borrow_book, return_book_to_library, Search_books, create_user, check_user, \
-    create_adminuser
+from init_db import get_books, borrow_book, return_book_to_library, Search_books, create_user, check_user, create_adminuser
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key_here'  # Replace with a strong random string
 
-db_pass = "54321"
+db_pass = "root"
 
-conn = psycopg2.connect(database="BM Task", host="db", user="postgres", password=db_pass, port="5432")
+conn = psycopg2.connect(database="BM Task", host="localhost", user="postgres", password="root", port="5432")
 
 
 # Database connection function
@@ -18,7 +17,7 @@ def db_conn():
     """
     Establishes a connection to the PostgreSQL database.
     """
-    conn = psycopg2.connect(database="BM Task", host="db", user="postgres", password=db_pass, port="5432")
+    conn = psycopg2.connect(database="BM Task", host="localhost", user="postgres", password="root", port="5432")
     return conn
 
 
