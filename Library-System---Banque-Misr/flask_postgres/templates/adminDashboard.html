@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        table {
+            table-layout: fixed; /* Ensure table respects column width */
+            border-collapse: separate; /* Adds spacing between table cells */
+            border-spacing: 0; /* Removes default spacing between cells */
+            width: 100%; /* Make sure the table takes the full width */
+        }
+        .table td, .table th {
+            padding: 0.75rem; /* Adjust padding for table cells */
+            overflow-wrap: break-word; /* Allow long text to wrap */
+        }
+        .scrollable-cell {
+            max-width: 150px; /* Adjust the maximum width as needed */
+            overflow-x: auto; /* Enable horizontal scrolling */
+            white-space: nowrap; /* Prevent text from wrapping */
+            display: block; /* Make the cell a block element for scrolling */
+            padding: 0.5rem; /* Add padding inside the scrollable cell */
+        }
+        .card-header {
+            padding-bottom: 1rem; /* Add padding below card header */
+        }
+        .card-body {
+            padding: 1.5rem; /* Add padding inside card body */
+        }
+        .logout-container {
+        margin-top: 20px;
+    }
+
+    .logout-button {
+        padding: 5px 10px; /* Increase button size */
+        background-color: #dc3545;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        font-size: 1rem; /* Increase font size */
+        text-decoration: none;
+        display: inline-block;
+    }
+
+    .logout-button:hover {
+        background-color: #c82333;
+    }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <h2 class="text-center mb-4">Admin Dashboard</h2>
+
+        <!-- Books Section -->
+        <div class="card mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h3 class="card-title">Books</h3>
+                <div>
+                    <a href="/showbooks" class="btn btn-primary mr-2">All Books</a>
+                    <a href="/addbook" class="btn btn-primary">Add Book</a>
+                </div>
+            </div>
+        </div>
+        <div class="logout-container">
+            <a href="/landing" class="logout-button">Log Out</a>
+        </div>
+
+        <!-- Users Section -->
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h3 class="card-title">Users</h3>
+            </div>
+            <div class="card-body">
+                <table class="table table-striped table-sm">
+                    <thead>
+                        <tr>
+                            <th>User ID</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Password</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in users %}
+                            <tr>
+                                <td>{{ user['id'] }}</td>
+                                <td>{{ user['username'] }}</td>
+                                <td>{{ user['email'] }}</td>
+                                <td class="scrollable-cell">{{ user['password'] }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
+

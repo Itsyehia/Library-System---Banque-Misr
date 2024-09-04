@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: e-commerce-website
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: e-commerce-website
+  template:
+    metadata:
+      labels:
+        app: e-commerce-website
+    spec:
+      containers:
+      - name: e-commerce-container
+        image: ojosamuel/e-commerce
+        ports:
+        - containerPort: 80
+       

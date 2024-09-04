@@ -1,0 +1,50 @@
+
+Here’s the revised README file with updated instructions and improved clarity:
+
+Project Setup and Commands
+Building, Pushing, and Pulling Docker Images
+To build, push, and pull Docker images, use the following commands:
+
+Build the Docker Image:
+
+bash
+Copy code
+docker build -t reemwaleed/python:bm-project-v10 D:\bm-main\bm-main\Library-System---Banque-Misr\flask_postgres
+Push the Docker Image to Docker Hub:
+
+bash
+Copy code
+docker push reemwaleed/python:bm-project-v10
+Pull the Docker Image from Docker Hub:
+
+bash
+Copy code
+docker pull reemwaleed/python:bm-project-v10
+Kubernetes Commands
+To manage your Kubernetes resources, use these commands:
+
+Delete Existing Resources:
+
+bash
+Copy code
+kubectl delete -f deployment.yaml
+kubectl delete -f persistent-volume.yaml
+kubectl delete -f persistent-volume-claim.yaml
+kubectl delete -f pod.yaml
+kubectl delete -f service.yaml
+Apply New Configuration:
+
+bash
+Copy code
+kubectl apply -f deployment.yaml
+kubectl apply -f persistent-volume-claim.yaml
+kubectl apply -f persistent-volume.yaml
+kubectl apply -f pod.yaml
+kubectl apply -f service.yaml
+Running Services
+To access the running services, use the following command:
+
+bash
+Copy code
+minikube service library-json-service
+Feel free to adjust any specific paths or commands as needed for your environment.

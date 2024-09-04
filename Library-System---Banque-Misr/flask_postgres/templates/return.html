@@ -1,0 +1,153 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Include Bootstrap CSS -->
+    <link rel="stylesheet" href="/static/css/products.css">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <title>Return a Book</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background-color: #f4f4f4;
+        }
+
+        main {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            margin-bottom: 20px; /* Space between container and footer */
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .form-group select {
+            width: 30%;
+            padding: 8px;
+            margin-left: 450px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            border: none;
+            border-radius: 4px;
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .btn:hover {
+            background-color: #0056b3;
+        }
+
+        .alert {
+            max-width: 250px; /* Adjust the width of the alert */
+            margin: 0 auto; /* Center the alert */
+        }
+
+        footer {
+            background-color: #000; /* Or any other color you prefer */
+            color: #fff;
+            padding: 10px 0; /* Adjust height as needed */
+            text-align: center;
+            position: relative;
+            width: 100%;
+        }
+    </style>
+
+</head>
+<body>
+
+{% extends "base.html" %}
+
+{% block title %}
+Return a Book
+{% endblock %}
+
+{% block content %}
+<main>
+    <div class="container">
+        <!-- card section -->
+        <section id="product-cards">
+            <div class="container-fluid">
+                <!-- Check if there are books to return -->
+                {% if books %}
+                    <div class="row row-cols-2 row-cols-md-4 g-4">
+                        <!-- Loop through the books and create a card for each one -->
+                        {% for book in books %}
+                        <div class="col filter-item all new">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <!-- Generate the image path by extracting the last word (number) from the book name -->
+                                    {% set book_number = book.split(' ').pop() %}
+                                    <img src="/static/img/book-{{ book_number }}.png" alt="{{ book }}" class="book-image">
+                                    <h5 class="card-title text-center">{{ book }}</h5>
+                                    <form action="/return" method="POST">
+                                        <input type="hidden" name="book_name" value="{{ book }}">
+                                        <button type="submit" class="btn btn-primary">Return Book</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="alert alert-info mt-4 text-center">
+                        You don't have books to return.
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Display any messages -->
+            {% if message %}
+            <div class="alert {{ message[1] }} mt-4 text-center">
+                {{ message[0] }}
+            </div>
+            {% endif %}
+
+            <!-- Home Page button -->
+            <form action="/" method="GET">
+                <button type="submit" class="btn btn-secondary" style="margin-left: 450px; width: 15%;" >Home Page</button>
+            </form>
+
+        </section>
+    </div>
+</main>
+{% endblock %}
+
+</body>
+</html>

@@ -1,0 +1,82 @@
+{
+    "books": [
+        {
+            "id": 1,
+            "name": "Book 1",
+            "borrowedby": null
+        },
+        {
+            "id": 2,
+            "name": "Book 2",
+            "borrowedby": 1
+        },
+        {
+            "id": 3,
+            "name": "Hero Baby",
+            "borrowedby": null
+        },
+        {
+            "id": 4,
+            "name": "book 4",
+            "borrowedby": null
+        },
+        {
+            "id": 5,
+            "name": "nmnm",
+            "borrowedby": null
+        }
+    ],
+    "users": [
+        {
+            "id": 1,
+            "username": "user1",
+            "email": "user1@example.com",
+            "password": "hashedpassword",
+            "isAdmin": 0
+        },
+        {
+            "id": 2,
+            "username": "yehiashaikhoun",
+            "email": "yehiashaikhoun2002@gmail.com",
+            "password": "yehia",
+            "isAdmin": 0
+        },
+        {
+            "id": 3,
+            "username": "rawanfarouq",
+            "email": "rawanfarouq576@gmail.com",
+            "password": "rawan",
+            "isAdmin": 0
+        },
+        {
+            "id": 4,
+            "username": "koky",
+            "email": "koky12@gmail.com",
+            "password": "1234",
+            "isAdmin": 0
+        },
+        {
+            "id": 5,
+            "username": "kinzy",
+            "email": "kinzy@gmail.com",
+            "password": "54321",
+            "isAdmin": 0
+        }
+    ],
+    "admins": [
+        {
+            "id": 1,
+            "username": "admin1",
+            "email": "admin1@example.com",
+            "password": "hashedpassword",
+            "isAdmin": 1
+        },
+        {
+            "id": 2,
+            "username": "admin2",
+            "email": "admin2@example.com",
+            "password": "admin2",
+            "isAdmin": 1
+        }
+    ]
+}

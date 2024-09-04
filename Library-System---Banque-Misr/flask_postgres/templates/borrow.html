@@ -1,0 +1,125 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Borrow a Book</title>
+    <!-- Include Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background-color: #f4f4f4;
+        }
+
+        main {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 300px;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            width: 80%;
+            margin-left: 150px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .form-group select {
+            width: 30%;
+            padding: 8px;
+            margin-left: 350px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            border: none;
+            border-radius: 4px;
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .btn:hover {
+            background-color: #0056b3;
+        }
+
+        footer {
+            background-color: #000;
+            color: #fff;
+            padding: 10px 0;
+            text-align: center;
+            width: 100%;
+            position: relative;
+        }
+        .alert {
+            max-width: 250px; /* Adjust the width of the alert */
+            margin: 0 auto; /* Center the alert */
+        }
+    </style>
+</head>
+<body>
+    {% extends "base.html" %}
+
+    {% block title %}
+    Borrow a Book
+    {% endblock %}
+    
+    {% block content %}
+    <main>
+        <div class="container">
+            <h2>Borrow a Book</h2>
+            <form action="/borrow" method="POST">
+                <div class="form-group">
+                    <label for="book_name" style="margin-left: 350px;">Select a Book:</label>
+                    <select id="book_name" name="book_name" required>
+                        {% for book in books %}
+                            <option value="{{ book['name'] }}">{{ book['name'] }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary" style="margin-left: 550px; width: 15%;">Borrow Book</button>
+            </form>
+            <form action="/" method="GET">
+                <button type="submit" class="btn btn-secondary" style="margin-left: 550px; width: 15%;" >Home Page</button>
+            </form>
+            {% if message %}
+                <div class="alert {{ message[1] }} mt-4">
+                    {{ message[0] }}
+                </div>
+            {% endif %}
+        </div>
+    </main>
+    {% endblock %}
+
+</body>
+</html>

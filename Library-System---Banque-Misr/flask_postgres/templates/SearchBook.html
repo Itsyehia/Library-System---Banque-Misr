@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search For A Book</title>
+    <style>
+       .home {
+            min-height: 80vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 300px;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .form-group select,
+        .form-group input {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .btn {
+            width: 100%;
+            padding: 10px;
+            background-color: black;
+            border: none;
+            border-radius: 4px;
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .btn:hover {
+            background-color: grey;
+        }
+        .message {
+            margin-top: 20px;
+            font-size: 14px;
+            color: red;
+            text-align: center;
+        }
+
+    </style>
+</head>
+<body>
+
+{% extends "base.html" %}
+<!-- extends footer and header from the base -->
+{% block title %}Search For a Book{% endblock %}
+
+{% block content %}
+<!--home section-->
+<section class="home section" id="home">
+<div class="container">
+    <h2>Search For a Book</h2>
+    <form action="/searchbooks" method="POST">
+        <div class="form-group">
+            <label for="book_name">Book Name:</label>
+            <input type="text" id="book_name" name="book_name">
+        </div>
+
+        {% if books %}
+        <div class="form-group">
+            <ul class="list-group-flush">
+                {% for book in books %}
+                    <li class="list-group-item" style="margin: 20px 0;">{{ book['name'] }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+
+        <button type="submit" class="btn btn-primary">Search</button>
+    </form>
+
+    <!-- Home Page button -->
+    <form action="/" method="GET">
+        <button type="submit" class="btn btn-secondary" style="margin-right: 10px;">Home Page</button>
+    </form>
+
+    {% if message %}
+        <div class="message">{{ message }}</div>
+    {% endif %}
+</div>
+</section>
+{% endblock %}
+
+</body>
+</html>
