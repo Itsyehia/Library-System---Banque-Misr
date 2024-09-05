@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: library-json-deployment
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: library-json
@@ -15,10 +15,6 @@ spec:
       containers:
         - name: library-json-container
           image: reemwaleed/python:bm-project-v10
-          volumeMounts:
-            - name: library-json-storage
-              mountPath: "/mnt/data"
-
           resources:
             limits:
               memory: "512Mi"
@@ -26,7 +22,12 @@ spec:
             requests:
               memory: "256Mi"
               cpu: "250m"
-      volumes:
-        - name: library-json-storage
-          persistentVolumeClaim:
-            claimName: library-json-pvc
+
+      #     volumeMounts:
+      #       - name: library-json-storage
+      #         mountPath: "/mnt/data"
+          
+      # volumes:
+      #   - name: library-json-storage
+      #     persistentVolumeClaim:
+      #       claimName: library-json-pvc
