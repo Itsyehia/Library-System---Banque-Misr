@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: library-json-container
-          image: reemwaleed/new-deploymentnew-image:v3.0
+          image: reemwaleed/new-deploymentnew-image:v11
           resources:
             limits:
               memory: "512Mi"
