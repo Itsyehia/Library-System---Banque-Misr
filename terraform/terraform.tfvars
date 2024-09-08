@@ -1,6 +1,0 @@
-region        = "us-west-2"
-project_name  = "BM-LMS"
-cluster_name  = "yehia-cluster"
-instance_type = "t2.medium"
-key_name      = "yehia-key"
-ami           = "ami-02d3770deb1c746ec"
