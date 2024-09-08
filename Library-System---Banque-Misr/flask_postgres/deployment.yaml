@@ -14,11 +14,7 @@ spec:
     spec:
       containers:
         - name: library-json-container
-          image: reemwaleed/new-deploymentnew-image:v3.0 # Updated with custom tag
-          volumeMounts:
-            - name: library-json-storage
-              mountPath: "/mnt/data"
-
+          image: reemwaleed/new-deploymentnew-image:v3.0
           resources:
             limits:
               memory: "512Mi"
@@ -26,7 +22,3 @@ spec:
             requests:
               memory: "256Mi"
               cpu: "250m"
-      volumes:
-        - name: library-json-storage
-          persistentVolumeClaim:
-            claimName: library-json-pvc
