@@ -9,9 +9,8 @@ Build the Docker Image:
 
 bash
 Copy code
-docker build -t reemwaleed/python:bm-project-v10 D:\bm-main\bm-main\Library-System---Banque-Misr\flask_postgres
-Push the Docker Image to Docker Hub:
-
+docker build -t reemwaleed/python:bm-project-v10 D:\final project phases\Library-System---Banque-Misr-main\Library-System---Banque-Misr\flask_postgres
+ reemwaleed/library_json:latest
 bash
 Copy code
 docker push reemwaleed/python:bm-project-v10
@@ -36,11 +35,12 @@ Apply New Configuration:
 
 bash
 Copy code
-kubectl apply -f deployment.yaml
+
 kubectl apply -f persistent-volume-claim.yaml
 kubectl apply -f persistent-volume.yaml
 kubectl apply -f pod.yaml
 kubectl apply -f service.yaml
+kubectl apply -f deployment.yaml
 Running Services
 To access the running services, use the following command:
 

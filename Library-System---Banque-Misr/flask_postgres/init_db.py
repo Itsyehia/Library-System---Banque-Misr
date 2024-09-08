@@ -1,7 +1,7 @@
 import json
 import bcrypt
 
-DATA_FILE = 'data.json'
+DATA_FILE = '/app/data/data.json'
 
 def read_data():
     with open(DATA_FILE, 'r') as f:

@@ -9,24 +9,13 @@ app.secret_key = 'your_secret_key_here'  # Replace with a strong random string
 
 
 
-# Create the data.json file in /mnt directory
-DATA_FILE = '/mnt/data/data.json'
-INITIAL_DATA_FILE = '/mnt/d/bm-main/bm-main/Library-System---Banque-Misr/flask_postgres/data/initial_data.json'
+DATA_FILE = '/app/data/data.json'
 
-# Ensure the directory exists
-os.makedirs(os.path.dirname(DATA_FILE), exist_ok=True)
-
+ 
 
 def load_initial_data():
-    with open(INITIAL_DATA_FILE, 'r') as f:
+    with open(DATA_FILE, 'r') as f:
         return json.load(f)
-
-if not os.path.exists(DATA_FILE):
-    initial_data = load_initial_data()
-    with open(DATA_FILE, 'w') as f:
-        json.dump(initial_data, f, indent=4)
-
-
 
 def read_data():
     with open(DATA_FILE, 'r') as f:
@@ -184,23 +173,21 @@ def search_books():
 
     return render_template('SearchBook.html', books=books, message=message)
 
-@app.route('/showbooks')
+@app.route('/ShowBooks')
 def show_books():
     data = read_data()
     books = data['books']
     return render_template('ShowBooks.html', data=books)
 
-@app.route('/addbook', methods=['GET', 'POST'])
-def add_book():
+@app.route('/AddBook', methods=['GET', 'POST'])
+def addbook():
     if request.method == 'POST':
         name = request.form['name']
         userID = None  # userID will be None, meaning NULL in JSON
-
         data = read_data()
         book_id = max(book['id'] for book in data['books']) + 1 if data['books'] else 1
         data['books'].append({'id': book_id, 'name': name, 'borrowedby': userID})
         write_data(data)
-
         return redirect(url_for('show_books'))  # Redirect to show books
 
     return render_template('Addbook.html')
