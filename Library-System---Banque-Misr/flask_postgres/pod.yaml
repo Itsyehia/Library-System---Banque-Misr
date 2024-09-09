@@ -5,7 +5,7 @@ metadata:
 spec:
   containers:
     - name: library-json-container
-      image: reemwaleed/new-pod-imagenew:v3.0 # Updated with custom tag
+      image:  reemwaleed/new-pod-image:v4.0 # Updated with custom tag
       ports:
         - containerPort: 5000
       command: [ "python", "-m", "flask", "run", "--host=0.0.0.0", "--port=5000" ]
