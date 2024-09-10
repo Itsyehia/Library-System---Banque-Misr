@@ -206,13 +206,38 @@ stage('Docker Login') {
     }
 }
 ```
+### 6. Trivy Scan
 
-**Explanation:**  
-This stage logs into Docker Hub using the provided credentials. It ensures that Jenkins can push Docker images to the Docker registry, which is necessary for deploying the application.
+**Code:**
+
+```groovy
+stage('Trivy Scan') {
+    steps {
+        script {
+            // Install the latest version of Trivy CLI
+            sh '''
+                curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- latest
+            '''
+
+            // Run Trivy scan and save the report in JSON format
+            sh '''
+                trivy image --no-progress --format json --output trivy-report.json reemwaleed/new-deployment-image:v4.0
+            '''
+
+            // Archive the Trivy report as an artifact
+            archiveArtifacts artifacts: 'trivy-report.json', allowEmptyArchive: true
+        }
+    }
+}
+```
+
+**Explanation:**
+
+This stage performs a security vulnerability scan using **Trivy** on the Docker image to ensure it's free of known security issues before deployment. **Trivy**, scans the Docker image, then saves the scan report in a JSON file. The report is then archived in Jenkins for future review.
 
 ---
 
-### 6. Docker Build and Push
+### 7. Docker Build and Push
 
 **Code:**
 
@@ -232,7 +257,7 @@ This stage builds a Docker image from the application code and then pushes it to
 
 ---
 
-### 7. Generate Deployment YAML
+### 8. Generate Deployment YAML
 
 **Code:**
 
@@ -253,7 +278,7 @@ This stage generates a Kubernetes deployment YAML file with the updated Docker i
 
 ---
 
-### 8. AWS Login and Configure EKS
+### 9. AWS Login and Configure EKS
 
 **Code:**
 
@@ -286,7 +311,7 @@ This stage logs into AWS and configures access to the EKS cluster.ensure that yo
 
 ---
 
-### 9. Smoke Test
+### 10. Smoke Test
 
 **Code:**
 
