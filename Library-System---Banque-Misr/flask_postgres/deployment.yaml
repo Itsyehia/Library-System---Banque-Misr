@@ -1,32 +1,32 @@
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: apps/v1  # Specifies the API version used for deployment
+kind: Deployment     # Defines the kind of resource, in this case, a Deployment
 metadata:
-  name: library-json-deployment
+  name: library-json-deployment  # Name of the deployment
 spec:
-  replicas: 1
+  replicas: 1  # Number of pod replicas to run for high availability
   selector:
     matchLabels:
-      app: library-json
+      app: library-json  # Selector that matches the label of the pods to manage
   template:
     metadata:
       labels:
-        app: library-json
+        app: library-json  # Labels applied to the pod for identification
     spec:
       containers:
-        - name: library-json-container
-          image: reemwaleed/new-deployment-image:v4.0
+        - name: library-json-container  # Name of the container
+          image: reemwaleed/new-deployment-image:v4.0  # Docker image to be used for the container
           resources:
             limits:
-              memory: "512Mi"
-              cpu: "500m"
+              memory: "512Mi"  # Maximum memory the container is allowed to use
+              cpu: "500m"      # Maximum CPU the container is allowed to use (0.5 CPU core)
             requests:
-              memory: "256Mi"
-              cpu: "250m"
+              memory: "256Mi"  # Memory the container requests at minimum
+              cpu: "250m"      # Minimum CPU resources requested (0.25 CPU core)
           volumeMounts:
-            - name: library-json-storage
-              mountPath: "/mnt/data"
+            - name: library-json-storage  # Name of the volume to be mounted
+              mountPath: "/mnt/data"      # Path inside the container where the volume will be mounted
           
       volumes:
-        - name: library-json-storage
+        - name: library-json-storage  # Define a volume
           persistentVolumeClaim:
-            claimName: library-json-pvc
+            claimName: library-json-pvc  # Link the volume to a PersistentVolumeClaim (PVC)
