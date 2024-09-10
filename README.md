@@ -94,4 +94,228 @@ The project provides an end-to-end approach, starting from application developme
 - **Python & Flask**: Set up Python and Flask for local development.
 
 
+---
+## Jenkins Pipeline
+
+### 1. Clean Workspace
+
+**Code:**
+
+```groovy
+stage('Clean Workspace') {
+    steps {
+        script {
+            deleteDir() // Deletes the entire workspace
+        }
+    }
+}
+```
+
+**Explanation:**  
+This stage clears out the Jenkins workspace to ensure that the pipeline starts with a clean slate. It removes all files and directories from the workspace to avoid issues with old or conflicting files.
+
+---
+
+### 2. Clone Repository
+
+**Code:**
+
+```groovy
+stage('Clone Repository') {
+    steps {
+        script {
+            if (isUnix()) {
+                sh 'git clone https://github.com/Itsyehia/Library-System---Banque-Misr.git'
+            } else {
+                bat 'git clone https://github.com/Itsyehia/Library-System---Banque-Misr.git'
+            }
+        }
+    }
+}
+```
+
+**Explanation:**  
+This stage clones the project repository from GitHub into the Jenkins workspace. It ensures that the latest code and configuration files are available for the build and deployment processes.
+
+---
+
+### 3. SonarQube Analysis
+
+**Code:**
+
+```groovy
+stage('SonarQube Analysis') {
+    environment {
+        scannerHome = tool 'SonarQubeScanner' // Name of SonarQube scanner tool in Jenkins
+    }
+    steps {
+        withSonarQubeEnv('SonarQube') { // Use the SonarQube environment configured in Jenkins
+            script {
+                withCredentials([string(credentialsId: 'sonarqube-token', variable: 'SONAR_TOKEN')]) {
+                    if (isUnix()) {
+                        sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=LibrarySystem -Dsonar.sources=./Library-System---Banque-Misr -Dsonar.login=${SONAR_TOKEN}"
+                    } else {
+                        bat "${scannerHome}\\bin\\sonar-scanner -Dsonar.projectKey=LibrarySystem -Dsonar.sources=./Library-System---Banque-Misr -Dsonar.login=${SONAR_TOKEN}"
+                    }
+                }
+            }
+        }
+    }
+}
+```
+
+**Explanation:**  
+This stage runs a SonarQube analysis to check the code quality and identify any issues such as bugs, vulnerabilities, or code smells. It helps ensure that the code meets quality standards before proceeding further.
+
+---
+
+### 4. Quality Gate
+
+**Code:**
+
+```groovy
+stage('Quality Gate') {
+    steps {
+        timeout(time: 1, unit: 'MINUTES') {
+            waitForQualityGate abortPipeline: true // Ensures the pipeline waits for the SonarQube quality gate result
+        }
+    }
+}
+```
+
+**Explanation:**  
+This stage waits for SonarQube to finish its analysis and provides feedback on code quality. If the quality gate fails (indicating issues in the code), the pipeline will be aborted to prevent deploying problematic code.
+
+---
+
+### 5. Docker Login
+
+**Code:**
+
+```groovy
+stage('Docker Login') {
+    steps {
+        script {
+            withCredentials([usernamePassword(credentialsId: 'docker_account', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+                sh '''
+                    docker logout || true
+                    echo ${DOCKER_PASSWORD} | docker login ${DOCKER_REGISTRY} -u ${DOCKER_USERNAME} --password-stdin
+                '''
+            }
+        }
+    }
+}
+```
+
+**Explanation:**  
+This stage logs into Docker Hub using the provided credentials. It ensures that Jenkins can push Docker images to the Docker registry, which is necessary for deploying the application.
+
+---
+
+### 6. Docker Build and Push
+
+**Code:**
+
+```groovy
+stage('Docker Build and Push') {
+    steps {
+        script {
+              dockerOperations.BuildAndPush('Library-System---Banque-Misr/app', "${DOCKER_IMAGE_TAG}")
+        }
+    }
+}
+```
+
+**Explanation:**  
+This stage builds a Docker image from the application code and then pushes it to Docker Hub. The Docker image contains the application and all its dependencies, making it portable and easy to deploy.
+
+---
+
+### 7. Generate Deployment YAML
+
+**Code:**
+
+```groovy
+stage('Generate Deployment YAML') {
+    steps {
+        script {
+            // Generate a deployment YAML file with the new image
+            def filePath = 'Library-System---Banque-Misr/Library-System---Banque-Misr/flask_postgres'
+            dockerOperations.generateDeploymentYAML("${DOCKER_IMAGE_TAG}", filePath)
+        }
+    }
+}
+```
+
+**Explanation:**  
+This stage generates a Kubernetes deployment YAML file with the updated Docker image tag. This YAML file defines how the application should be deployed on Kubernetes.
+
+---
+
+### 8. AWS Login and Configure EKS
+
+**Code:**
+
+```groovy
+stage('AWS Login and Configure EKS') {
+    steps {
+        script {
+            withCredentials([aws(credentialsId: 'aws_credentials', accessKeyVariable: 'AWS_ACCESS_KEY_ID', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
+                sh 'aws sts get-caller-identity'
+                sh "aws eks update-kubeconfig --region us-west-2 --name Team3-cluster"
+                
+                dir('Library-System---Banque-Misr/Library-System---Banque-Misr/flask_postgres') {
+                    sh '''
+                        kubectl apply -f pod.yaml
+                        kubectl apply -f deployment.yaml
+                        kubectl apply -f service.yaml
+                        kubectl get svc
+                    '''
+                }
+            }
+        }
+    }
+}
+```
+
+**Explanation:**  
+This stage logs into AWS and configures access to the EKS cluster. It then applies the Kubernetes configuration files to deploy the application on the cluster and verifies the services are running.
+
+---
+
+### 9. Smoke Test
+
+**Code:**
+
+```groovy
+stage('Smoke Test') {
+    steps {
+        script {
+            withCredentials([aws(credentialsId: 'aws_credentials', accessKeyVariable: 'AWS_ACCESS_KEY_ID', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
+                def lb_dns = ""
+                def retries = 5
+                def delay = 30 // seconds
+
+                lb_dns = sh(script: "kubectl get svc library-json-service -o jsonpath='{.status.loadBalancer.ingress[0].hostname}'", returnStdout: true).trim()
+
+                retry(retries) {
+                    echo "Testing server at http://${lb_dns}/landing"
+                    def response = sh(script: "curl -s -o /dev/null -w \"%{http_code}\" http://${lb_dns}/landing", returnStdout: true).trim()
+                    if (response != "200") {
+                        error "Server not ready. Response code: ${response}"
+                    } else {
+                        echo "Server is running"
+                    }
+                }
+            }
+        }
+    }
+}
+```
+
+**Explanation:**  
+This stage performs a smoke test to ensure that the application is running correctly. It checks if the application responds with a `200 OK` status code from a specific endpoint. If the server isn’t ready, it retries the test several times.
+
+---
+
 
