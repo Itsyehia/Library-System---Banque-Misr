@@ -112,7 +112,7 @@ stage('Clean Workspace') {
 ```
 
 **Explanation:**  
-This stage clears out the Jenkins workspace to ensure that the pipeline starts with a clean slate. It removes all files and directories from the workspace to avoid issues with old or conflicting files.
+This stage removes all files and directories from the workspace to avoid issues with old or conflicting files then starts with a clean slate.
 
 ---
 
@@ -220,6 +220,7 @@ This stage logs into Docker Hub using the provided credentials. It ensures that 
 stage('Docker Build and Push') {
     steps {
         script {
+               // build and push docker image with a groovy fucntion created separately 
               dockerOperations.BuildAndPush('Library-System---Banque-Misr/app', "${DOCKER_IMAGE_TAG}")
         }
     }
@@ -261,9 +262,11 @@ stage('AWS Login and Configure EKS') {
     steps {
         script {
             withCredentials([aws(credentialsId: 'aws_credentials', accessKeyVariable: 'AWS_ACCESS_KEY_ID', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
+               // get current user credentials to ensure login 
                 sh 'aws sts get-caller-identity'
                 sh "aws eks update-kubeconfig --region us-west-2 --name Team3-cluster"
-                
+
+               // apply Yaml files
                 dir('Library-System---Banque-Misr/Library-System---Banque-Misr/flask_postgres') {
                     sh '''
                         kubectl apply -f pod.yaml
@@ -279,7 +282,7 @@ stage('AWS Login and Configure EKS') {
 ```
 
 **Explanation:**  
-This stage logs into AWS and configures access to the EKS cluster. It then applies the Kubernetes configuration files to deploy the application on the cluster and verifies the services are running.
+This stage logs into AWS and configures access to the EKS cluster.ensure that your local kubectl tool is correctly configured to communicate with the EKS cluster, enabling you to perform operations and manage Kubernetes resources on AWS. .It then applies the Kubernetes configuration files to deploy the application on the cluster and verifies the services are running.
 
 ---
 
