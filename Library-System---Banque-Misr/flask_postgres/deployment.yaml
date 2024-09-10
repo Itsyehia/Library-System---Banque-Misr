@@ -22,3 +22,11 @@ spec:
             requests:
               memory: "256Mi"
               cpu: "250m"
+          volumeMounts:
+            - name: library-json-storage
+              mountPath: "/mnt/data"
+          
+      volumes:
+        - name: library-json-storage
+          persistentVolumeClaim:
+            claimName: library-json-pvc
