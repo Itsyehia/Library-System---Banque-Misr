@@ -1,0 +1,59 @@
+pipeline {
+    agent any
+
+    environment {
+        TF_VAR_region = 'us-west-2' // Change this to your desired region
+    }
+    
+    stages {
+        
+        stage('Clean Workspace') {
+            steps {
+                script {
+                    deleteDir() // Deletes the entire workspace
+                }
+            }
+        }
+        
+        stage('Clone Repository') {
+            steps {
+                script {
+                    if (isUnix()) {
+                        sh 'git clone https://github.com/Itsyehia/Library-System---Banque-Misr.git'
+                    } else {
+                        bat 'git clone https://github.com/Itsyehia/Library-System---Banque-Misr.git'
+                    }
+                }
+            }
+        }
+        
+        stage('Terraform Init and Apply') {
+            steps {
+                script {
+                    withCredentials([aws(credentialsId: 'aws_credentials', accessKeyVariable: 'AWS_ACCESS_KEY_ID', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
+                        if (isUnix()) {
+                            sh 'aws sts get-caller-identity'
+                             dir('Library-System---Banque-Misr/terraform') { // Change to your Terraform directory
+                        if (isUnix()) {
+                            sh 'terraform init'
+                            sh 'terraform plan'
+                             sh 'terraform destroy --auto-approve'
+                            sh 'terraform apply --auto-approve'
+                        } else {
+                            bat 'terraform init'
+                            bat 'terraform plan'
+                            bat 'terraform apply --auto-approve'
+                        }
+                    }
+                        } else {
+                            bat 'aws sts get-caller-identity'
+                        }
+                    }
+                    
+                   
+                }
+            }
+        }
+         
+    }
+}

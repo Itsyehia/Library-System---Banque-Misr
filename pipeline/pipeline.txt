@@ -1,0 +1,123 @@
+@Library('LibrarySystem') _
+pipeline {
+    agent any
+
+    environment {
+        DOCKER_IMAGE_TAG = "v${BUILD_ID}"
+        DOCKER_REGISTRY = 'https://index.docker.io/v1/'
+        REPO_URL = 'https://github.com/Itsyehia/Library-System---Banque-Misr.git'
+        AWS_REGION = 'us-west-2'
+        CLUSTER_NAME = 'Team3-cluster'
+    }
+
+    stages {
+        stage('Clean Workspace') {
+            steps {
+                script {
+                    deleteDir() // Deletes the entire workspace
+                }
+            }
+        }
+        
+         stage('Clone Repository') {
+            steps {
+                script {
+                    if (isUnix()) {
+                        sh 'git clone https://github.com/Itsyehia/Library-System---Banque-Misr.git'
+                    } else {
+                        bat 'git clone https://github.com/Itsyehia/Library-System---Banque-Misr.git'
+                    }
+                }
+            }
+        }
+         
+        
+        stage('Docker Login') {
+            steps {
+                script {
+                    withCredentials([usernamePassword(credentialsId: 'docker_account', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+                        sh '''
+                            docker logout || true
+                            echo ${DOCKER_PASSWORD} | docker login ${DOCKER_REGISTRY} -u ${DOCKER_USERNAME} --password-stdin
+                        '''
+                    }
+                }
+            }
+        }
+        
+        stage('Docker Build and Push') {
+            steps {
+                script {
+                      dockerOperations('Library-System---Banque-Misr/app', "${DOCKER_IMAGE_TAG}")
+                }
+            }
+        }
+        
+        
+
+        stage('AWS Login and Credentials') {
+            steps {
+                script {
+                    withCredentials([aws(credentialsId: 'aws_credentials', accessKeyVariable: 'AWS_ACCESS_KEY_ID', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
+                        sh 'aws sts get-caller-identity'
+                        sh "aws eks update-kubeconfig --region us-west-2 --name Team3-cluster"
+                        
+                        dir('Library-System---Banque-Misr/Library-System---Banque-Misr/flask_postgres') {
+                            sh '''
+                                kubectl apply -f deployment.yaml
+                                kubectl apply -f service.yaml
+                                kubectl get svc
+                            '''
+                        }
+                    }
+                }
+            }
+        }
+        
+        stage('Smoke Test') {
+            steps {
+                script {
+                    withCredentials([aws(credentialsId: 'aws_credentials', accessKeyVariable: 'AWS_ACCESS_KEY_ID', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
+                        def lb_dns = ""
+                        def retries = 5
+                        def delay = 30 // seconds
+
+                        lb_dns = sh(script: "kubectl get svc library-json-service -o jsonpath='{.status.loadBalancer.ingress[0].hostname}'", returnStdout: true).trim()
+
+                        retry(retries) {
+                            echo "Testing server at http://${lb_dns}/landing"
+                            def response = sh(script: "curl -s -o /dev/null -w \"%{http_code}\" http://${lb_dns}/landing", returnStdout: true).trim()
+                            if (response != "200") {
+                                error "Server not ready. Response code: ${response}"
+                            } else {
+                                echo "Server is running"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            cleanWs() // Always clean the workspace
+        }
+        success {
+            echo 'Pipeline completed successfully!'
+        }
+        failure {
+            echo 'Pipeline failed.'
+        }
+    }
+}
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
