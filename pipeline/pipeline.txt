@@ -90,7 +90,7 @@ pipeline {
         }
         
 
-        stage('AWS Login and Credentials') {
+        stage('AWS Login and configure EKS') {
             steps {
                 script {
                     withCredentials([aws(credentialsId: 'aws_credentials', accessKeyVariable: 'AWS_ACCESS_KEY_ID', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
@@ -147,13 +147,3 @@ pipeline {
         }
     }
 }
-       
-       
-       
-       
-       
-       
-       
-       
-       
-       
