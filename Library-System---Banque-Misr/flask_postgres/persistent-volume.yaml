@@ -1,13 +1,13 @@
-apiVersion: v1
-kind: PersistentVolume
+apiVersion: v1  # Specifies the API version for the PersistentVolume
+kind: PersistentVolume  # Defines the kind of resource, in this case, a PersistentVolume
 metadata:
-  name: library-json-pv-new
+  name: library-json-pv-new  # Name of the PersistentVolume
 spec:
   capacity:
-    storage: 1Gi
+    storage: 1Gi  # Amount of storage provided by the PersistentVolume
   accessModes:
-    - ReadWriteOnce
-  persistentVolumeReclaimPolicy: Retain
-  storageClassName: manual
+    - ReadWriteOnce  # Access mode indicating that the volume can be mounted as read-write by a single node
+  persistentVolumeReclaimPolicy: Retain  # Reclaim policy specifying what happens to the volume when the PersistentVolumeClaim is deleted. "Retain" means the volume will not be deleted and must be manually cleaned up.
+  storageClassName: manual  # Storage class to be used for the volume. "manual" indicates that the volume is manually provisioned
   hostPath:
-    path: "/mnt/d/volume"
+    path: "/mnt/d/volume"  # Path on the host node where the volume is located
