@@ -3,26 +3,27 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_IMAGE_TAG = "v${BUILD_ID}"
-        DOCKER_REGISTRY = 'https://index.docker.io/v1/'
-        REPO_URL = 'https://github.com/Itsyehia/Library-System---Banque-Misr.git'
-        AWS_REGION = 'us-west-2'
-        CLUSTER_NAME = 'Team3-cluster'
-        scannerHome = tool 'SonarQubeScanner' // SonarQube scanner tool in Jenkins
+        DOCKER_IMAGE_TAG = "v${BUILD_ID}" // Tag for Docker image using Jenkins build ID
+        DOCKER_REGISTRY = 'https://index.docker.io/v1/' // Docker registry URL
+        REPO_URL = 'https://github.com/Itsyehia/Library-System---Banque-Misr.git' // Git repository URL
+        AWS_REGION = 'us-west-2' // AWS region
+        CLUSTER_NAME = 'Team3-cluster' // EKS cluster name
+        scannerHome = tool 'SonarQubeScanner' // SonarQube scanner tool configured in Jenkins
     }
 
     stages {
         stage('Clean Workspace') {
             steps {
                 script {
-                    deleteDir() // Deletes the entire workspace
+                    deleteDir() // Deletes all files in the workspace
                 }
             }
         }
         
-         stage('Clone Repository') {
+        stage('Clone Repository') {
             steps {
                 script {
+                    // Clone the Git repository based on OS
                     if (isUnix()) {
                         sh 'git clone https://github.com/Itsyehia/Library-System---Banque-Misr.git'
                     } else {
@@ -31,13 +32,15 @@ pipeline {
                 }
             }
         }
-          stage('SonarQube Analysis') {
+
+        stage('SonarQube Analysis') {
             environment {
-                scannerHome = tool 'SonarQubeScanner' // Name of SonarQube scanner tool in Jenkins
+                scannerHome = tool 'SonarQubeScanner' // SonarQube scanner tool in Jenkins
             }
             steps {
-                withSonarQubeEnv('SonarQube') { // Use the SonarQube environment configured in Jenkins
+                withSonarQubeEnv('SonarQube') { // Use SonarQube environment configured in Jenkins
                     script {
+                        // Run SonarQube analysis with credentials
                         withCredentials([string(credentialsId: 'sonarqube-token', variable: 'SONAR_TOKEN')]) {
                             if (isUnix()) {
                                 sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=LibrarySystem -Dsonar.sources=./Library-System---Banque-Misr -Dsonar.login=${SONAR_TOKEN}"
@@ -53,7 +56,7 @@ pipeline {
         stage('Quality Gate') {
             steps {
                 timeout(time: 1, unit: 'MINUTES') {
-                    waitForQualityGate abortPipeline: true // Ensures the pipeline waits for the SonarQube quality gate result
+                    waitForQualityGate abortPipeline: true // Wait for SonarQube quality gate result
                 }
             }
         }
@@ -61,6 +64,7 @@ pipeline {
         stage('Docker Login') {
             steps {
                 script {
+                    // Login to Docker registry
                     withCredentials([usernamePassword(credentialsId: 'docker_account', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
                         sh '''
                             docker logout || true
@@ -74,7 +78,8 @@ pipeline {
         stage('Docker Build and Push') {
             steps {
                 script {
-                      dockerOperations.BuildAndPush('Library-System---Banque-Misr/app', "${DOCKER_IMAGE_TAG}")
+                    // Build and push Docker image
+                    dockerOperations.BuildAndPush('Library-System---Banque-Misr/app', "${DOCKER_IMAGE_TAG}")
                 }
             }
         }
@@ -82,21 +87,22 @@ pipeline {
         stage('Generate Deployment YAML') {
             steps {
                 script {
-                    // generate a deployement yaml files with the new image
+                    // Generate deployment YAML files with the new Docker image tag
                     def filePath = 'Library-System---Banque-Misr/Library-System---Banque-Misr/flask_postgres'
                     dockerOperations.generateDeploymentYAML("${DOCKER_IMAGE_TAG}", filePath)
                 }
             }
         }
-        
 
-        stage('AWS Login and configure EKS') {
+        stage('AWS Login and Configure EKS') {
             steps {
                 script {
+                    // Login to AWS and configure kubectl to use the EKS cluster
                     withCredentials([aws(credentialsId: 'aws_credentials', accessKeyVariable: 'AWS_ACCESS_KEY_ID', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
-                        sh 'aws sts get-caller-identity'
+                        sh 'aws sts get-caller-identity' // Verify AWS credentials
                         sh "aws eks update-kubeconfig --region us-west-2 --name Team3-cluster"
                         
+                        // Apply Kubernetes configurations
                         dir('Library-System---Banque-Misr/Library-System---Banque-Misr/flask_postgres') {
                             sh '''
                                 kubectl apply -f pod.yaml
@@ -109,15 +115,17 @@ pipeline {
                 }
             }
         }
-        
+
         stage('Smoke Test') {
             steps {
                 script {
+                    // Perform smoke testing on the deployed service
                     withCredentials([aws(credentialsId: 'aws_credentials', accessKeyVariable: 'AWS_ACCESS_KEY_ID', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
                         def lb_dns = ""
                         def retries = 5
                         def delay = 30 // seconds
 
+                        // Get the load balancer DNS name
                         lb_dns = sh(script: "kubectl get svc library-json-service -o jsonpath='{.status.loadBalancer.ingress[0].hostname}'", returnStdout: true).trim()
 
                         retry(retries) {
@@ -137,7 +145,7 @@ pipeline {
 
     post {
         always {
-            cleanWs() // Always clean the workspace
+            cleanWs() // Always clean the workspace after the pipeline execution
         }
         success {
             echo 'Pipeline completed successfully!'
