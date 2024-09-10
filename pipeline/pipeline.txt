@@ -90,6 +90,7 @@ pipeline {
                         
                         dir('Library-System---Banque-Misr/Library-System---Banque-Misr/flask_postgres') {
                             sh '''
+                                kubectl apply -f pod.yaml
                                 kubectl apply -f deployment.yaml
                                 kubectl apply -f service.yaml
                                 kubectl get svc
