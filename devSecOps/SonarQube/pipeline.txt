@@ -1,0 +1,57 @@
+pipeline {
+    agent any
+
+    environment {
+        DOCKER_IMAGE_TAG = "v${BUILD_ID}"
+        SONARQUBE_ENV = 'SonarQube' // Replace with your SonarQube server name
+    }
+
+    stages {
+        stage('Clean Workspace') {
+            steps {
+                script {
+                    deleteDir() // Deletes the entire workspace
+                }
+            }
+        }
+        
+        stage('Clone Repository') {
+            steps {
+                script {
+                    if (isUnix()) {
+                        sh 'git clone https://github.com/Itsyehia/Library-System---Banque-Misr.git'
+                    } else {
+                        bat 'git clone https://github.com/Itsyehia/Library-System---Banque-Misr.git'
+                    }
+                }
+            }
+        }
+
+        stage('SonarQube Analysis') {
+            environment {
+                scannerHome = tool 'SonarQubeScanner' // Name of SonarQube scanner tool in Jenkins
+            }
+            steps {
+                withSonarQubeEnv('SonarQube') { // Use the SonarQube environment configured in Jenkins
+                    script {
+                        withCredentials([string(credentialsId: 'sonarqube-token', variable: 'SONAR_TOKEN')]) {
+                            if (isUnix()) {
+                                sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=LibrarySystem -Dsonar.sources=./Library-System---Banque-Misr -Dsonar.login=${SONAR_TOKEN}"
+                            } else {
+                                bat "${scannerHome}\\bin\\sonar-scanner -Dsonar.projectKey=LibrarySystem -Dsonar.sources=./Library-System---Banque-Misr -Dsonar.login=${SONAR_TOKEN}"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        stage('Quality Gate') {
+            steps {
+                timeout(time: 1, unit: 'MINUTES') {
+                    waitForQualityGate abortPipeline: true // Ensures the pipeline waits for the SonarQube quality gate result
+                }
+            }
+        }
+    }
+}

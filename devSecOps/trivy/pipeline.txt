@@ -1,0 +1,78 @@
+@Library('LibrarySystem') _
+pipeline {
+    agent any
+
+    environment {
+        DOCKER_IMAGE_TAG = "v${BUILD_ID}" // Tag for Docker image using Jenkins build ID
+        DOCKER_REGISTRY = 'https://index.docker.io/v1/' // Docker registry URL
+        REPO_URL = 'https://github.com/Itsyehia/Library-System---Banque-Misr.git' // Git repository URL
+        AWS_REGION = 'us-west-2' // AWS region
+        CLUSTER_NAME = 'Team3-cluster' // EKS cluster name
+    }
+
+    stages {
+        stage('Clean Workspace') {
+            steps {
+                script {
+                    deleteDir() // Deletes all files in the workspace
+                }
+            }
+        }
+        
+        stage('Clone Repository') {
+            steps {
+                script {
+                    // Clone the Git repository based on OS
+                    if (isUnix()) {
+                        sh 'git clone https://github.com/Itsyehia/Library-System---Banque-Misr.git'
+                    } else {
+                        bat 'git clone https://github.com/Itsyehia/Library-System---Banque-Misr.git'
+                    }
+                }
+            }
+        }
+        
+        stage('Docker Login') {
+            steps {
+                script {
+                    // Login to Docker registry
+                    withCredentials([usernamePassword(credentialsId: 'docker_account', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+                        sh '''
+                            docker logout || true
+                            echo ${DOCKER_PASSWORD} | docker login ${DOCKER_REGISTRY} -u ${DOCKER_USERNAME} --password-stdin
+                        '''
+                    }
+                }
+            }
+        }
+        
+        stage('Docker Build and Push') {
+            steps {
+                script {
+                    // Build and push Docker image
+                    dockerOperations.BuildAndPush('Library-System---Banque-Misr/app', "${DOCKER_IMAGE_TAG}")
+                }
+            }
+        }
+
+        
+stage('Trivy Scan') {
+    steps {
+        script {
+            // Install the latest version of Trivy CLI
+            sh '''
+                curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- latest
+            '''
+            
+            // Run Trivy scan and save the report in JSON format
+            sh '''
+                trivy image --no-progress --format json --output trivy-report.json reemwaleed/new-deployment-image:v4.0
+            '''
+            
+            // Archive the Trivy report as an artifact
+            archiveArtifacts artifacts: 'trivy-report.json', allowEmptyArchive: true
+        }
+    }
+}
+    }
+}
