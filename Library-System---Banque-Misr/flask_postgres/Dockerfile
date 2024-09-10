@@ -1,16 +1,26 @@
+# Stage 1: Set the base image
 # Use an official Python runtime as a parent image
+# The 'slim' version is a minimal base image that reduces size
 FROM python:3.10-slim
 
-# Set the working directory in the container
+# Stage 2: Set working directory
+# Set the working directory in the container to /app
+# All subsequent commands will run from this directory
 WORKDIR /app
 
-# Copy the current directory contents into the container at /app
+# Stage 3: Copy application files
+# Copy the current directory contents (project files) into the container at /app
+# This includes code, requirements, and other necessary files
 COPY . /app
 
-# Install any needed packages specified in requirements.txt
+# Stage 4: Install dependencies
+# Install the dependencies listed in the requirements.txt file
+# --no-cache-dir prevents caching to reduce image size
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Create the initial data file inside the container using heredoc
+# Stage 5: Create initial data file
+# Create the initial data file inside the container
+# Using a heredoc to directly write JSON data to /app/data.json
 RUN cat <<EOF > /app/data.json
 {
     "books": [
@@ -96,12 +106,18 @@ RUN cat <<EOF > /app/data.json
 }
 EOF
 
-# Make port 5000 available to the world outside this container
+# Stage 6: Expose the port
+# Expose port 5000 to allow traffic to the Flask application
 EXPOSE 5000
 
-# Define environment variable
+# Stage 7: Set environment variables
+# Define environment variables for Flask
+# FLASK_APP points to the main Flask file (app.py)
+# FLASK_ENV sets the environment to 'development' for easier debugging
 ENV FLASK_APP=app.py
 ENV FLASK_ENV=development
 
-# Run app.py when the container launches
+# Stage 8: Run the Flask application
+# Command to run the Flask application when the container starts
+# The '--host=0.0.0.0' option allows external access to the app from other machines
 CMD ["flask", "run", "--host=0.0.0.0"]
