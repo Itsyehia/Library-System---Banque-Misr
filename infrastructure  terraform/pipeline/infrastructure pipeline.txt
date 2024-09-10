@@ -33,7 +33,7 @@ pipeline {
                     withCredentials([aws(credentialsId: 'aws_credentials', accessKeyVariable: 'AWS_ACCESS_KEY_ID', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
                         if (isUnix()) {
                             sh 'aws sts get-caller-identity'
-                             dir('Library-System---Banque-Misr/terraform') { // Change to your Terraform directory
+                             dir('Library-System---Banque-Misr/infrastructure\ terraform/terraform-with-modules') { // Change to your Terraform directory
                         if (isUnix()) {
                             sh 'terraform init'
                             sh 'terraform plan'
