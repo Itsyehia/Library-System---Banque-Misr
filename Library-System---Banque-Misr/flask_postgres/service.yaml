@@ -1,12 +1,16 @@
-apiVersion: v1
-kind: Service
+apiVersion: v1  # Specifies the API version for the Service
+kind: Service  # Defines the kind of resource, in this case, a Service
 metadata:
-  name: library-json-service
+  name: library-json-service  # Name of the Service
 spec:
   selector:
-    app: library-json
+    app: library-json  # Selector to identify which Pods this Service should route traffic to
   ports:
-    - protocol: TCP
-      port: 80
-      targetPort: 5000
-  type: LoadBalancer  # Use ClusterIP or NodePort as needed
+    - protocol: TCP  # Protocol used by the Service
+      port: 80  # Port that the Service will expose
+      targetPort: 5000  # Port on the container that the Service should route traffic to
+  type: LoadBalancer  # Type of Service; LoadBalancer exposes the Service externally via a cloud provider's load balancer
+  # Possible values for type include:
+  # ClusterIP (default) - Exposes the Service on a cluster-internal IP.
+  # NodePort - Exposes the Service on each Node's IP at a static port.
+  # LoadBalancer - Exposes the Service externally using a cloud provider's load balancer.
