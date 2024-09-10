@@ -74,11 +74,20 @@ pipeline {
         stage('Docker Build and Push') {
             steps {
                 script {
-                      dockerOperations('Library-System---Banque-Misr/app', "${DOCKER_IMAGE_TAG}")
+                      dockerOperations.BuildAndPush('Library-System---Banque-Misr/app', "${DOCKER_IMAGE_TAG}")
                 }
             }
         }
-        
+
+        stage('Generate Deployment YAML') {
+            steps {
+                script {
+                    // generate a deployement yaml files with the new image
+                    def filePath = 'Library-System---Banque-Misr/Library-System---Banque-Misr/flask_postgres'
+                    dockerOperations.generateDeploymentYAML("${DOCKER_IMAGE_TAG}", filePath)
+                }
+            }
+        }
         
 
         stage('AWS Login and Credentials') {
