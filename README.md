@@ -115,12 +115,12 @@ Library-System---Banque-Misr/
 - **Tool/Technology**: Jenkins
 - **Description**: Set up Jenkins to automate the CI/CD pipeline, including building Docker images, deploying to EKS, and running tests.
 
-### Stage 7: Testing
+### Stage 6: Testing
 - **Tool/Technology**: Smoke Tests
 - **Description**: Perform basic tests to ensure the application is running correctly after deployment.
 - ![Screenshot (929)](https://github.com/user-attachments/assets/2217d1ab-006a-416e-a9b8-78d72dc2548c)
 
-### Stage 8: Code Quality and Security (BONUS)
+### Stage 7: Code Quality and Security (BONUS)
 - **Tools/Technology**: SonarQube, Trivy, and Jenkins Credentials Manager
 - **Description**: 
   - **SonarQube**: Analyze code quality and detect any issues or bugs.
