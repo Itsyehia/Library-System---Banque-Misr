@@ -1,4 +1,4 @@
-![cpu usage](https://github.com/user-attachments/assets/1fa67e51-d74c-4008-87e9-3aea3970168a)# DevOps Final Project
+![pipeline](https://github.com/user-attachments/assets/0967f6e6-2c80-4291-81a2-261e521aa748)# DevOps Final Project
 
 ## Table of Contents
 
@@ -112,7 +112,7 @@ Library-System---Banque-Misr/
 ### Stage 6: Monitoring
 - **Tool/Technology**: Prometheus and Grafana
 - **Description**: Implement monitoring using Prometheus for metrics collection and Grafana for visualizing the health and performance of the application and infrastructure.
-![pipeline](https://github.com/user-attachments/assets/0967f6e6-2c80-4291-81a2-261e521aa748)
+- ![cpu usage](https://github.com/user-attachments/assets/1fa67e51-d74c-4008-87e9-3aea3970168a)
 
 
 ### Stage 7: Testing
