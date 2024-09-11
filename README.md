@@ -520,23 +520,8 @@ This stage  is used to clean up resources such as old Docker images after a succ
 - **Bonus Resource**: [Kubernetes Monitoring Setup](https://www.coachdevops.com/2022/05/how-to-setup-monitoring-on-kubernetes.html)
 - **Trivy**: [Issue Discussion](https://github.com/aquasecurity/trivy/issues/3660)
 - **Shared Library Tutorial**: [YouTube Video](https://www.youtube.com/watch?v=RvY5b--wnE0)
-- **Our Repository**: [Shared Libraries Repo](https://github.com/reemsarhan/sharedLibsRepo)
+- **Shared Libraries Repository**: [Shared Libraries Repo](https://github.com/reemsarhan/sharedLibsRepo)
 
 ---
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
