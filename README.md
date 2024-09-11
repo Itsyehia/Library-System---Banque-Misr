@@ -115,19 +115,12 @@ Library-System---Banque-Misr/
 - **Tool/Technology**: Jenkins
 - **Description**: Set up Jenkins to automate the CI/CD pipeline, including building Docker images, deploying to EKS, and running tests.
 
-### Stage 6: Monitoring
-- **Tool/Technology**: Prometheus and Grafana
-- **Description**: Implement monitoring using Prometheus for metrics collection and Grafana for visualizing the health and performance of the application and infrastructure.
-- ![cpu usage](https://github.com/user-attachments/assets/1fa67e51-d74c-4008-87e9-3aea3970168a)
-- ![conatiner network](https://github.com/user-attachments/assets/c28efdcd-bbb9-4deb-b878-09c985db5340)
-
-
 ### Stage 7: Testing
 - **Tool/Technology**: Smoke Tests
 - **Description**: Perform basic tests to ensure the application is running correctly after deployment.
 - ![Screenshot (929)](https://github.com/user-attachments/assets/2217d1ab-006a-416e-a9b8-78d72dc2548c)
 
-### Stage 8: Code Quality and Security
+### Stage 8: Code Quality and Security (BONUS)
 - **Tools/Technology**: SonarQube, Trivy, and Jenkins Credentials Manager
 - **Description**: 
   - **SonarQube**: Analyze code quality and detect any issues or bugs.
@@ -135,6 +128,11 @@ Library-System---Banque-Misr/
   - **Trivy**: Scan Docker images for vulnerabilities before deployment.
   - ![Screenshot (927)](https://github.com/user-attachments/assets/2b467674-c3f0-42f1-9762-de2103d33ae3)
 
+### Stage 8: Monitoring (BONUS)
+- **Tool/Technology**: Prometheus and Grafana
+- **Description**: Implement monitoring using Prometheus for metrics collection and Grafana for visualizing the health and performance of the application and infrastructure.
+- ![cpu usage](https://github.com/user-attachments/assets/1fa67e51-d74c-4008-87e9-3aea3970168a)
+- ![conatiner network](https://github.com/user-attachments/assets/c28efdcd-bbb9-4deb-b878-09c985db5340)
 ---
 
 ## Installation and Prerequisites
