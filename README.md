@@ -70,7 +70,10 @@ Library-System---Banque-Misr/
 │
 ├── Pipeline/                         # Contains Jenkins pipeline scripts for CI/CD automation
 │
+├── DevSecOps/                         # Contains Jenkins pipeline scripts for CI/CD automation
+│
 ├── Library-System---Banque-Misr/     # Main project folder containing the deployment YAML and Flask app
+│   └── UI/                           # Folder contains the UI for the Flask app
 │   └── flask_postgres/               # Folder for Flask app integrated with PostgreSQL and Kubernetes YAMLs
 │       └── deployment.yaml           # Kubernetes deployment configuration for the Flask app
 │       └── service.yaml              # Kubernetes service configuration for exposing the app
