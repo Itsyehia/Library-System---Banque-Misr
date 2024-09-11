@@ -9,7 +9,7 @@ To manage Docker images, use the following commands:
 1. **Build the Docker Image**:
 
     ```bash
-    docker build -t reemwaleed/python:bm-project-v10 D:\final project phases\Library-System---Banque-Misr-main\Library-System---Banque-Misr\flask_postgres
+    docker build -t reemwaleed/python:bm-project-v10 .
     docker build -t reemwaleed/library_json:latest .
     ```
 
@@ -17,12 +17,14 @@ To manage Docker images, use the following commands:
 
     ```bash
     docker push reemwaleed/python:bm-project-v10
+    docker push reemwaleed/library_json:latest
     ```
 
 3. **Pull the Docker Image from Docker Hub**:
 
     ```bash
     docker pull reemwaleed/python:bm-project-v10
+    docker pull reemwaleed/library_json:latest
     ```
 
 ## Kubernetes Commands
