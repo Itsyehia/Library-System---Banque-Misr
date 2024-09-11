@@ -1,5 +1,5 @@
 # AWS Infrastructure Setup
-
+ ![Diagram drawio](https://github.com/user-attachments/assets/e67c8a58-6959-4157-92db-67cd78ce9355)
 This directory contains resources and pipelines to create and manage AWS infrastructure using Terraform. It is organized into three main components: `pipeline`, `simple-Infrastructure`, and `terraform-with-modules`.
 
 ## Folder Structure
