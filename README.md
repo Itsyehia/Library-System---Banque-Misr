@@ -1,4 +1,5 @@
 # DevOps Final Project
+![pipeline](https://github.com/user-attachments/assets/0967f6e6-2c80-4291-81a2-261e521aa748)
 
 ## Table of Contents
 1. [Project Overview](#project-overview)
