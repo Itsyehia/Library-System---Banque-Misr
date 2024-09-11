@@ -99,7 +99,7 @@ Library-System---Banque-Misr/
 
 ### Stage 1: Development
 - **Tool/Technology**: Python (Flask)
-- **Description**: Develop the web application and manage data using JSON files.
+- **Description**: Develop the Library management web application and manage data using JSON files.
 - ![BoROOW BOOKS with One Click](https://github.com/user-attachments/assets/777e0ea4-4c78-4415-be8c-1c7e881342ea)
 
 ### Stage 2: Containerization
