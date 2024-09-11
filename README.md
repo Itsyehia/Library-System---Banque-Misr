@@ -31,7 +31,8 @@
    - [8. Generate Deployment YAML](#8-generate-deployment-yaml)
    - [9. AWS Login and Configure EKS](#9-aws-login-and-configure-eks)
    - [10. Smoke Test](#10-smoke-test)
-   - [11. Cleanup (Optional)](#11-cleanup-optional)
+   - [11. Cleanup ](#11-cleanup-optional)
+8. [References](#references)
 ---
 
 ## Project Overview
@@ -502,3 +503,34 @@ stage('Cleanup') {
 ```
 Explanation:
 This stage  is used to clean up resources such as old Docker images after a successful deployment. This helps in freeing up space and maintaining a clean environment.
+
+
+
+---
+
+## References
+
+- **Terraform Modules**: [GitHub Repository](https://github.com/7hundredtech/EKS-Terraform--Project/tree/main/EKS_Project/modules)
+- **Bonus Resource**: [Kubernetes Monitoring Setup](https://www.coachdevops.com/2022/05/how-to-setup-monitoring-on-kubernetes.html)
+- **Trivy**: [Issue Discussion](https://github.com/aquasecurity/trivy/issues/3660)
+- **Shared Library Tutorial**: [YouTube Video](https://www.youtube.com/watch?v=RvY5b--wnE0)
+- **Our Repository**: [Shared Libraries Repo](https://github.com/reemsarhan/sharedLibsRepo)
+
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
