@@ -74,16 +74,41 @@ Library-System---Banque-Misr/
 
 ---
 
-## Technologies Used
-- **Python (Flask)**: For developing the web application.
-- **Docker**: For containerizing the application.
-- **Kubernetes**: For managing deployment on AWS EKS.
-- **AWS EKS**: Managed Kubernetes service used to deploy the application.
-- **Terraform**: For infrastructure as code (IaC) to provision AWS resources.
-- **Jenkins**: For creating a CI/CD pipeline to automate the deployment process.
-- **SonarQube**: For static code analysis, ensuring code quality and security.
-- **Trivy**: For scanning Docker images for vulnerabilities before deployment.
-- **Prometheus & Grafana (Bonus Task)**: For monitoring and logging the health and performance of the application and infrastructure.
+## Stages and Technologies Used
+
+### Stage 1: Development
+- **Tool/Technology**: Python (Flask)
+- **Description**: Develop the web application and manage data using JSON files.
+
+### Stage 2: Containerization
+- **Tool/Technology**: Docker
+- **Description**: Create a Dockerfile and containerize the Flask application for consistent deployment.
+
+### Stage 3: Infrastructure as Code
+- **Tool/Technology**: Terraform
+- **Description**: Use Infrastructure as Code (IaC) to define and manage AWS resources, such as the EKS cluster and networking.
+
+### Stage 4: Deployment
+- **Tool/Technology**: Kubernetes on AWS EKS
+- **Description**: Deploy and manage the Dockerized application and associated services on the AWS EKS cluster.
+
+### Stage 5: CI/CD Integration
+- **Tool/Technology**: Jenkins
+- **Description**: Set up Jenkins to automate the CI/CD pipeline, including building Docker images, deploying to EKS, and running tests.
+
+### Stage 6: Monitoring
+- **Tool/Technology**: Prometheus and Grafana
+- **Description**: Implement monitoring using Prometheus for metrics collection and Grafana for visualizing the health and performance of the application and infrastructure.
+
+### Stage 7: Testing
+- **Tool/Technology**: Smoke Tests
+- **Description**: Perform basic tests to ensure the application is running correctly after deployment.
+
+### Stage 8: Code Quality and Security
+- **Tools/Technology**: SonarQube and Trivy
+- **Description**: 
+  - **SonarQube**: Analyze code quality and detect any issues or bugs.
+  - **Trivy**: Scan Docker images for vulnerabilities before deployment.
 
 ---
 
