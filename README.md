@@ -1,4 +1,10 @@
-![pipeline](https://github.com/user-attachments/assets/0967f6e6-2c80-4291-81a2-261e521aa748)
+
+
+
+https://github.com/user-attachments/assets/4a84b89d-29d0-481c-8516-16cf9efd8920
+
+
+
 # DevOps Final Project
 
 ## Table of Contents
