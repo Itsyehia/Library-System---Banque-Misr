@@ -120,7 +120,7 @@ Library-System---Banque-Misr/
 - **Description**: Perform basic tests to ensure the application is running correctly after deployment.
 - ![Screenshot (929)](https://github.com/user-attachments/assets/2217d1ab-006a-416e-a9b8-78d72dc2548c)
 
-### Stage 7: Code Quality and Security (BONUS)
+### Stage 7: Code Quality and Security 
 - **Tools/Technology**: SonarQube, Trivy, and Jenkins Credentials Manager
 - **Description**: 
   - **SonarQube**: Analyze code quality and detect any issues or bugs.
@@ -128,7 +128,7 @@ Library-System---Banque-Misr/
   - **Trivy**: Scan Docker images for vulnerabilities before deployment.
   - ![Screenshot (927)](https://github.com/user-attachments/assets/2b467674-c3f0-42f1-9762-de2103d33ae3)
 
-### Stage 8: Monitoring (BONUS)
+### Stage 8: Monitoring 
 - **Tool/Technology**: Prometheus and Grafana
 - **Description**: Implement monitoring using Prometheus for metrics collection and Grafana for visualizing the health and performance of the application and infrastructure.
 - ![cpu usage](https://github.com/user-attachments/assets/1fa67e51-d74c-4008-87e9-3aea3970168a)
