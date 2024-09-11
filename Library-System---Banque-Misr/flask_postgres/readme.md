@@ -1,4 +1,4 @@
-# Project Setup and Commands
+# Project Setup and Commands without using pipeline
 
 ## Docker Commands
 
