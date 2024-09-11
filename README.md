@@ -93,6 +93,7 @@ Library-System---Banque-Misr/
 ### Stage 1: Development
 - **Tool/Technology**: Python (Flask)
 - **Description**: Develop the web application and manage data using JSON files.
+- ![BoROOW BOOKS with One Click](https://github.com/user-attachments/assets/777e0ea4-4c78-4415-be8c-1c7e881342ea)
 
 ### Stage 2: Containerization
 - **Tool/Technology**: Docker
@@ -101,6 +102,7 @@ Library-System---Banque-Misr/
 ### Stage 3: Infrastructure as Code
 - **Tool/Technology**: Terraform
 - **Description**: Use Infrastructure as Code (IaC) to define and manage AWS resources, such as the EKS cluster and networking.
+- ![Diagram drawio](https://github.com/user-attachments/assets/e67c8a58-6959-4157-92db-67cd78ce9355)
 
 ### Stage 4: Deployment
 - **Tool/Technology**: Kubernetes on AWS EKS
