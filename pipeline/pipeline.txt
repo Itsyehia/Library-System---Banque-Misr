@@ -61,24 +61,6 @@ pipeline {
             }
         }
         
-        stage('Trivy Scan') {
-            steps {
-                script {
-                // Install the latest version of Trivy CLI
-                sh '''
-                curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- latest
-                '''
-  
-                // Run Trivy scan and save the report in JSON format
-                sh '''
-                trivy image --no-progress --format json --output trivy-report.json reemwaleed/new-deployment-image:v4.0
-                '''
-
-                // Archive the Trivy report as an artifact
-                archiveArtifacts artifacts: 'trivy-report.json', allowEmptyArchive: true
-                    }
-                }
-        }
 
         stage('Docker Login') {
             steps {
@@ -101,6 +83,25 @@ pipeline {
                     dockerOperations.BuildAndPush('Library-System---Banque-Misr/app', "${DOCKER_IMAGE_TAG}")
                 }
             }
+        }
+
+        stage('Trivy Scan') {
+            steps {
+                script {
+                // Install the latest version of Trivy CLI
+                sh '''
+                curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- latest
+                '''
+  
+                // Run Trivy scan and save the report in JSON format
+                sh '''
+                trivy image --no-progress --format json --output trivy-report.json reemwaleed/new-deployment-image:v4.0
+                '''
+
+                // Archive the Trivy report as an artifact
+                archiveArtifacts artifacts: 'trivy-report.json', allowEmptyArchive: true
+                    }
+                }
         }
 
         stage('Generate Deployment YAML') {
