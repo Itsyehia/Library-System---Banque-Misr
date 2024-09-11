@@ -344,7 +344,29 @@ stage('Docker Login') {
     }
 }
 ```
-### 6. Trivy Scan
+
+
+### 6. Docker Build and Push
+
+**Code:**
+
+```groovy
+stage('Docker Build and Push') {
+    steps {
+        script {
+               // build and push docker image with a groovy fucntion created separately 
+              dockerOperations.BuildAndPush('Library-System---Banque-Misr/app', "${DOCKER_IMAGE_TAG}")
+        }
+    }
+}
+```
+
+**Explanation:**  
+This stage builds a Docker image from the application code and then pushes it to Docker Hub. The Docker image contains the application and all its dependencies, making it portable and easy to deploy.
+
+---
+
+### 7. Trivy Scan
 
 **Code:**
 
@@ -375,25 +397,6 @@ This stage performs a security vulnerability scan using **Trivy** on the Docker 
 
 ---
 
-### 7. Docker Build and Push
-
-**Code:**
-
-```groovy
-stage('Docker Build and Push') {
-    steps {
-        script {
-               // build and push docker image with a groovy fucntion created separately 
-              dockerOperations.BuildAndPush('Library-System---Banque-Misr/app', "${DOCKER_IMAGE_TAG}")
-        }
-    }
-}
-```
-
-**Explanation:**  
-This stage builds a Docker image from the application code and then pushes it to Docker Hub. The Docker image contains the application and all its dependencies, making it portable and easy to deploy.
-
----
 
 ### 8. Generate Deployment YAML
 
