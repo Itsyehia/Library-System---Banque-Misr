@@ -70,7 +70,7 @@ Library-System---Banque-Misr/
 │
 ├── Pipeline/                         # Contains Jenkins pipeline scripts for CI/CD automation
 │
-├── DevSecOps/                         # Contains Jenkins pipeline scripts for CI/CD automation
+├── DevSecOps/                         # Contains Jenkins pipeline scripts for sonarQube and trivy only
 │
 ├── Library-System---Banque-Misr/     # Main project folder containing the deployment YAML and Flask app
 │   └── UI/                           # Folder contains the UI for the Flask app
