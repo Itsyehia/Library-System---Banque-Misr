@@ -2,20 +2,34 @@
 ![pipeline](https://github.com/user-attachments/assets/0967f6e6-2c80-4291-81a2-261e521aa748)
 
 ## Table of Contents
-1. [Project Overview](#project-overview)
-2. [Project Structure](#project-structure)
-3. [Why Use This Project](#why-use-this-project)
-4. [Technologies Used](#technologies-used)
-5. [Installation and Prerequisites](#installation-and-prerequisites)
-6. [Detailed Instructions for Each Part](#detailed-instructions-for-each-part)
-   - [Part 1: Application Development](#part-1-application-development)
-   - [Part 2: Dockerization](#part-2-dockerization)
-   - [Part 3: Infrastructure as Code with Terraform](#part-3-infrastructure-as-code-with-terraform)
-   - [Part 4: Kubernetes Deployment on EKS](#part-4-kubernetes-deployment-on-eks)
-   - [Part 5: CI/CD Pipeline Setup](#part-5-cicd-pipeline-setup)
-   - [Part 6: Documentation and Presentation](#part-6-documentation-and-presentation)
-7. [Bonus Task: Monitoring and Logging](#bonus-task-monitoring-and-logging)
 
+1. [Project Overview](#project-overview)
+   - [Key Objectives](#key-objectives)
+2. [Project Structure](#project-structure)
+3. [Why Projects Like This Should Be Implemented](#why-projects-like-this-should-be-implemented)
+4. [Stages and Technologies Used](#stages-and-technologies-used)
+   - [Stage 1: Development](#stage-1-development)
+   - [Stage 2: Containerization](#stage-2-containerization)
+   - [Stage 3: Infrastructure as Code](#stage-3-infrastructure-as-code)
+   - [Stage 4: Deployment](#stage-4-deployment)
+   - [Stage 5: CI/CD Integration](#stage-5-cicd-integration)
+   - [Stage 6: Monitoring](#stage-6-monitoring)
+   - [Stage 7: Testing](#stage-7-testing)
+   - [Stage 8: Code Quality and Security](#stage-8-code-quality-and-security)
+5. [Installation and Prerequisites](#installation-and-prerequisites)
+   - [Prerequisites](#prerequisites)
+6. [Jenkins Pipeline](#jenkins-pipeline)
+   - [1. Clean Workspace](#1-clean-workspace)
+   - [2. Clone Repository](#2-clone-repository)
+   - [3. SonarQube Analysis](#3-sonarqube-analysis)
+   - [4. Quality Gate](#4-quality-gate)
+   - [5. Docker Login](#5-docker-login)
+   - [6. Trivy Scan](#6-trivy-scan)
+   - [7. Docker Build and Push](#7-docker-build-and-push)
+   - [8. Generate Deployment YAML](#8-generate-deployment-yaml)
+   - [9. AWS Login and Configure EKS](#9-aws-login-and-configure-eks)
+   - [10. Smoke Test](#10-smoke-test)
+   - [11. Cleanup (Optional)](#11-cleanup-optional)
 ---
 
 ## Project Overview
@@ -378,4 +392,18 @@ This stage performs a smoke test to ensure that the application is running corre
 
 ---
 
+### 11. Cleanup (Optional)
+**Code:**
 
+```groovy
+stage('Cleanup') {
+    steps {
+        script {
+            // Optionally clean up resources such as Docker images
+            sh 'docker rmi ${DOCKER_IMAGE_TAG} || true'
+        }
+    }
+}
+```
+Explanation:
+This stage  is used to clean up resources such as old Docker images after a successful deployment. This helps in freeing up space and maintaining a clean environment.
