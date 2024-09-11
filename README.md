@@ -400,7 +400,7 @@ This stage performs a smoke test to ensure that the application is running corre
 
 ---
 
-### 11. Cleanup (Optional)
+### 11. Cleanup 
 **Code:**
 
 ```groovy
