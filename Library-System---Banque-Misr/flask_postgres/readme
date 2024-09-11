@@ -1,50 +1,59 @@
+# Project Setup and Commands
 
-Here’s the revised README file with updated instructions and improved clarity:
+## Docker Commands
 
-Project Setup and Commands
-Building, Pushing, and Pulling Docker Images
-To build, push, and pull Docker images, use the following commands:
+### Building, Pushing, and Pulling Docker Images
 
-Build the Docker Image:
+To manage Docker images, use the following commands:
 
-bash
-Copy code
-docker build -t reemwaleed/python:bm-project-v10 D:\final project phases\Library-System---Banque-Misr-main\Library-System---Banque-Misr\flask_postgres
- reemwaleed/library_json:latest
-bash
-Copy code
-docker push reemwaleed/python:bm-project-v10
-Pull the Docker Image from Docker Hub:
+1. **Build the Docker Image**:
 
-bash
-Copy code
-docker pull reemwaleed/python:bm-project-v10
-Kubernetes Commands
+    ```bash
+    docker build -t reemwaleed/python:bm-project-v10 D:\final project phases\Library-System---Banque-Misr-main\Library-System---Banque-Misr\flask_postgres
+    docker build -t reemwaleed/library_json:latest .
+    ```
+
+2. **Push the Docker Image to Docker Hub**:
+
+    ```bash
+    docker push reemwaleed/python:bm-project-v10
+    ```
+
+3. **Pull the Docker Image from Docker Hub**:
+
+    ```bash
+    docker pull reemwaleed/python:bm-project-v10
+    ```
+
+## Kubernetes Commands
+
+### Managing Kubernetes Resources
+
 To manage your Kubernetes resources, use these commands:
 
-Delete Existing Resources:
+1. **Delete Existing Resources**:
 
-bash
-Copy code
-kubectl delete -f deployment.yaml
-kubectl delete -f persistent-volume.yaml
-kubectl delete -f persistent-volume-claim.yaml
-kubectl delete -f pod.yaml
-kubectl delete -f service.yaml
-Apply New Configuration:
+    ```bash
+    kubectl delete -f deployment.yaml
+    kubectl delete -f persistent-volume.yaml
+    kubectl delete -f persistent-volume-claim.yaml
+    kubectl delete -f pod.yaml
+    kubectl delete -f service.yaml
+    ```
 
-bash
-Copy code
+2. **Apply New Configuration**:
 
-kubectl apply -f persistent-volume-claim.yaml
-kubectl apply -f persistent-volume.yaml
-kubectl apply -f pod.yaml
-kubectl apply -f service.yaml
-kubectl apply -f deployment.yaml
-Running Services
-To access the running services, use the following command:
+    ```bash
+    kubectl apply -f persistent-volume-claim.yaml
+    kubectl apply -f persistent-volume.yaml
+    kubectl apply -f pod.yaml
+    kubectl apply -f service.yaml
+    kubectl apply -f deployment.yaml
+    ```
 
-bash
-Copy code
+## Running Services
+
+To access the running services in Minikube, use the following command:
+
+```bash
 minikube service library-json-service
-Feel free to adjust any specific paths or commands as needed for your environment.
