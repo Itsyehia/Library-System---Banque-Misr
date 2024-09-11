@@ -1,4 +1,4 @@
-![pipeline](https://github.com/user-attachments/assets/0967f6e6-2c80-4291-81a2-261e521aa748)
+
 # DevOps Final Project
 
 ## Table of Contents
@@ -236,6 +236,10 @@ dockerOperations.generateDeploymentYAML('v1.0.0', 'path/to/yaml')
 ---
 ## Jenkins Pipeline
 
+![pipeline](https://github.com/user-attachments/assets/56ac4333-7fd4-4b52-b1c2-289e0a11e563)
+
+
+---
 ### 1. Clean Workspace
 
 **Code:**
