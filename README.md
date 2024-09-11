@@ -381,7 +381,7 @@ stage('Trivy Scan') {
 
             // Run Trivy scan and save the report in JSON format
             sh '''
-                trivy image --no-progress --format json --output trivy-report.json reemwaleed/new-deployment-image:v4.0
+                trivy image --no-progress --format json --output trivy-report.json reemwaleed/new-deployment-image:v${DOCKER_IMAGE_TAG}
             '''
 
             // Archive the Trivy report as an artifact
