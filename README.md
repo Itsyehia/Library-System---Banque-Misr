@@ -119,10 +119,11 @@ Library-System---Banque-Misr/
 - **Description**: Perform basic tests to ensure the application is running correctly after deployment.
 
 ### Stage 8: Code Quality and Security
-- **Tools/Technology**: SonarQube and Trivy
+- **Tools/Technology**: SonarQube, Trivy, and Jenkins Credentials Manager
 - **Description**: 
   - **SonarQube**: Analyze code quality and detect any issues or bugs.
   - **Trivy**: Scan Docker images for vulnerabilities before deployment.
+  - **Jenkins Credentials Manager**: Securely manage sensitive information like SonarQube tokens, Docker credentials, and AWS access keys to ensure security in the pipeline during code quality checks and security scans.
 
 ---
 
