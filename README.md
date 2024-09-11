@@ -79,7 +79,8 @@ Library-System---Banque-Misr/
 │       └── service.yaml              # Kubernetes service configuration for exposing the app
 │       └── pod.yaml                  # YAML file to define and manage individual Kubernetes pods
 │       └── app.py                    # Main Python script for running the Flask app
-├── Note: each folder contains seperate README.md file for further documentation
+│
+├── Note: each folder contains a seperate README.md file for further documentation
 
 ```
 
