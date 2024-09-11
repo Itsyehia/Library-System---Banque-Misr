@@ -1,4 +1,4 @@
-https://github.com/user-attachments/assets/4a84b89d-29d0-481c-8516-16cf9efd8920
+![pipeline](https://github.com/user-attachments/assets/56ac4333-7fd4-4b52-b1c2-289e0a11e563)
 
 # DevOps Final Project
 
