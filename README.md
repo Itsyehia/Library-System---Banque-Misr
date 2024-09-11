@@ -125,8 +125,9 @@ Library-System---Banque-Misr/
 - **Tools/Technology**: SonarQube, Trivy, and Jenkins Credentials Manager
 - **Description**: 
   - **SonarQube**: Analyze code quality and detect any issues or bugs.
-  - **Trivy**: Scan Docker images for vulnerabilities before deployment.
   - **Jenkins Credentials Manager**: Securely manage sensitive information like SonarQube tokens, Docker credentials, and AWS access keys to ensure security in the pipeline during code quality checks and security scans.
+  - **Trivy**: Scan Docker images for vulnerabilities before deployment.
+  - ![Screenshot (927)](https://github.com/user-attachments/assets/2b467674-c3f0-42f1-9762-de2103d33ae3)
 
 ---
 
