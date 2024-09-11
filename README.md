@@ -120,6 +120,7 @@ Library-System---Banque-Misr/
 ### Stage 7: Testing
 - **Tool/Technology**: Smoke Tests
 - **Description**: Perform basic tests to ensure the application is running correctly after deployment.
+- ![Screenshot (929)](https://github.com/user-attachments/assets/2217d1ab-006a-416e-a9b8-78d72dc2548c)
 
 ### Stage 8: Code Quality and Security
 - **Tools/Technology**: SonarQube, Trivy, and Jenkins Credentials Manager
