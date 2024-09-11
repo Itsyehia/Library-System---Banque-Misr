@@ -18,7 +18,9 @@
    - [Stage 8: Code Quality and Security](#stage-8-code-quality-and-security)
 5. [Installation and Prerequisites](#installation-and-prerequisites)
    - [Prerequisites](#prerequisites)
-6. [Jenkins Pipeline](#jenkins-pipeline)
+6. [Shared Libraries](#shared-libraries)
+
+7. [Jenkins Pipeline](#jenkins-pipeline)
    - [1. Clean Workspace](#1-clean-workspace)
    - [2. Clone Repository](#2-clone-repository)
    - [3. SonarQube Analysis](#3-sonarqube-analysis)
@@ -146,6 +148,88 @@ Library-System---Banque-Misr/
 - **Trivy**: Install [Trivy](https://github.com/aquasecurity/trivy) for scanning Docker images for vulnerabilities.
 - **SonarQube**: Set up [SonarQube](https://www.sonarqube.org/downloads/) for code quality and security analysis.
 - **Prometheus & Grafana**: Install [Prometheus](https://prometheus.io/docs/prometheus/latest/installation/) and [Grafana](https://grafana.com/docs/grafana/latest/installation/) for monitoring and logging.
+
+
+---
+## Shared Libraries 
+
+This section explains the shared library functions used in the Jenkins pipeline later on . Ensure your Jenkins environment is configured with the necessary credentials before using these functions.
+![shared lin](https://github.com/user-attachments/assets/f387038f-0a15-4e18-b94d-40c1f5e43913)
+
+### `dockerOperations.groovy` - Functions
+
+---
+
+### 1. **BuildAndPush**
+
+**Code:**
+```groovy
+def BuildAndPush(String repoDir, String imageTag) {
+    dir(repoDir) {
+        if (isUnix()) {
+            sh "docker build -t reemwaleed/new-deploymentnew-image:${imageTag} ."
+            sh "docker push reemwaleed/new-deploymentnew-image:${imageTag}"
+            sh "docker rmi -f reemwaleed/new-deploymentnew-image:${imageTag}"
+        } else {
+            bat "docker build -t reemwaleed/new-deploymentnew-image:${imageTag} ."
+            bat "docker push reemwaleed/new-deploymentnew-image:${imageTag}"
+            bat "docker rmi -f reemwaleed/new-deploymentnew-image:${imageTag}"
+        }
+    }
+}
+```
+**Explanation:**  
+Builds a Docker image from the specified directory, pushes it to a Docker registry, and removes the local image.
+
+**Parameters:**
+- `repoDir`: Directory containing the Dockerfile.
+- `imageTag`: Tag for the Docker image.
+
+**Usage:**
+```groovy
+dockerOperations.BuildAndPush('path/to/repo', 'v1.0.0')
+```
+---
+
+### 2. **generateDeploymentYAML**
+
+**Code:**
+```groovy
+def generateDeploymentYAML(imageTag, filePath) {
+    sh """
+    cat <<EOF > ${filePath}/deployment.yaml
+    apiVersion: apps/v1
+    kind: Deployment
+    metadata:
+      name: library-json-deployment
+    spec:
+      replicas: 1
+      selector:
+        matchLabels:
+          app: library-json
+      template:
+        metadata:
+          labels:
+            app: library-json
+        spec:
+          containers:
+            name: library-json-container
+            image: reemwaleed/new-deployment-image:${imageTag}
+  EOF"""
+}
+
+```
+**Explanation:**  
+Generates a Kubernetes deployment YAML with the updetaed Docker image tag.
+
+**Parameters:**
+- `imageTag`: Docker image tag.
+- `filePath`: Path to save the YAML file.
+
+**Usage:**
+```groovy
+dockerOperations.generateDeploymentYAML('v1.0.0', 'path/to/yaml')
+```
 
 
 ---
